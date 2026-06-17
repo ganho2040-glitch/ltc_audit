@@ -1,0 +1,40 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 배포에 올리지 않을 것 — 규칙 추출용 '재료'(앱 실행에 불필요, 용량 큼)
+reference/
+
+# 개발용 문서·메모
+docs/
+
+# 코드 백업 파일
+*.bak
+*.bak[0-9]
+
+# 로컬 개발 도구 설정
+.claude/
+
+# 임시 테스트 스크립트
+_*.mjs

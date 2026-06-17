@@ -1,0 +1,486 @@
+.app {
+  text-align: left;
+  padding-top: 16px;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* ── 요약 바 ── */
+.summary {
+  display: flex;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #fff;
+  border-radius: 12px;
+  border-left: 5px solid #ccc;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  flex-wrap: wrap;
+}
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 100px;
+}
+.summary-label {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+.summary-value {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ── 면책 한 줄 ── */
+.disclaimer {
+  margin: 8px 2px 0 2px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #999;
+}
+
+/* ── 수급자 탭 바 ── */
+.tab-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 8px 4px;
+  background: #f5f5f5;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid #e5e7eb;
+}
+.tab {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.tab:hover { background: #f0f6ff; }
+.tab-active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+  font-weight: 700;
+}
+.tab-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.dot-critical { background: #dc2626; }
+.dot-warning { background: #eab308; }
+
+/* ── 툴바 ── */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0 20px 0;
+}
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+.btn-primary:hover { background: #1d4ed8; }
+.btn-sample {
+  background: #f0f0f0;
+  color: #333;
+}
+.btn-sample:hover { background: #e0e0e0; }
+.btn-clear {
+  background: #fff;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+.btn-clear:hover { background: #fef2f2; }
+.btn-print {
+  background: #1e293b;
+  color: #fff;
+}
+.btn-print:hover { background: #0f172a; }
+
+/* ── 보고서 메타 입력란 (기관명/점검월/점검자) ── */
+.report-meta-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+.meta-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+.meta-field span {
+  color: #555;
+  white-space: nowrap;
+}
+.meta-field input {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 160px;
+}
+.meta-hint {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ── 업로드 안내 배너 ── */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.banner-ok {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+.banner-warn {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+.banner-close {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  color: inherit;
+  opacity: 0.6;
+}
+.banner-close:hover { opacity: 1; }
+
+/* ── 수급자 카드 ── */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  background: #f8f8f8;
+  border-bottom: 1px solid #eee;
+  gap: 8px;
+}
+
+/* ── 카드 상단 종합 상태 배지 (가장 눈에 띄게) ── */
+.status-banner {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px 20px;
+  color: #fff;
+}
+.status-label {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.status-score {
+  font-size: 17px;
+  font-weight: 600;
+  opacity: 0.95;
+}
+.name-input {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  outline: none;
+}
+.name-input::placeholder { color: #aaa; }
+.btn-remove {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.btn-remove:hover { background: #fee2e2; color: #dc2626; }
+
+.card-body {
+  padding: 16px 20px;
+}
+
+/* ── 구역 ── */
+.section {
+  margin-bottom: 20px;
+}
+.section:last-child { margin-bottom: 0; }
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e5e7eb;
+}
+.subsection {
+  margin-bottom: 14px;
+  padding-left: 12px;
+  border-left: 3px solid #e5e7eb;
+}
+.subsection h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin: 0 0 8px 0;
+}
+
+/* ── 입력 필드 ── */
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+}
+.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+.field-label {
+  white-space: nowrap;
+  color: #444;
+  min-width: 80px;
+}
+.field input[type="number"],
+.field input[type="time"],
+.field input[type="date"] {
+  width: 100px;
+  padding: 5px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+.field input[type="number"] { width: 70px; }
+.field-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.field-suffix {
+  font-size: 13px;
+  color: #888;
+}
+.check-field {
+  cursor: pointer;
+  padding: 3px 0;
+}
+.check-field input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #2563eb;
+}
+.calc-hint {
+  font-size: 13px;
+  color: #666;
+  margin: 6px 0 0 0;
+}
+
+/* ── 판정 결과 ── */
+.card-result {
+  padding: 16px 20px;
+  border-top: 3px solid #ccc;
+  background: #fafafa;
+}
+.result-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.result-summary-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+.result-grade {
+  font-size: 19px;
+  font-weight: 700;
+}
+.no-violation {
+  color: #16a34a;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ── 위반 테이블 ── */
+.violation-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.violation-table th {
+  text-align: left;
+  padding: 6px 8px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ddd;
+  font-weight: 600;
+  color: #555;
+}
+.violation-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+.row-critical { background: #fef2f2; }
+.row-warning { background: #fefce8; }
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.badge-critical { background: #fee2e2; color: #991b1b; }
+.badge-warning { background: #fef9c3; color: #854d0e; }
+.source-cell {
+  font-size: 12px;
+  color: #888;
+  max-width: 160px;
+}
+
+.empty-msg {
+  text-align: center;
+  color: #999;
+  padding: 40px 0;
+  font-size: 15px;
+}
+
+/* ── 인쇄(PDF) 보고서 ── */
+/* 평소 화면에서는 보고서 영역을 숨긴다 */
+.print-report { display: none; }
+
+@media print {
+  /* 조작용 요소(제목·요약·탭·버튼·카드 등)는 모두 숨기고 보고서만 출력 */
+  .app > *:not(.print-report) { display: none !important; }
+  .print-report { display: block !important; }
+
+  /* 인쇄는 흑백·여백 정리 */
+  body { background: #fff; }
+  #root { max-width: none; margin: 0; padding: 0; }
+
+  .pr-title {
+    text-align: center;
+    font-size: 18px;
+    margin: 0 0 14px 0;
+  }
+  .pr-meta, .pr-summary {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+  .pr-meta th, .pr-meta td,
+  .pr-summary th, .pr-summary td {
+    border: 1px solid #999;
+    padding: 5px 8px;
+    text-align: left;
+  }
+  .pr-meta th, .pr-summary th {
+    background: #f0f0f0;
+    white-space: nowrap;
+    width: 1%;
+  }
+
+  .pr-recipient {
+    margin-bottom: 12px;
+    /* 수급자 블록이 페이지 중간에 잘리지 않게 */
+    page-break-inside: avoid;
+  }
+  .pr-recipient-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid #333;
+    padding: 4px 2px;
+    margin-bottom: 4px;
+  }
+  .pr-name { font-size: 14px; font-weight: 700; }
+  .pr-grade { font-size: 13px; font-weight: 700; }
+
+  .pr-violations {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+  .pr-violations th, .pr-violations td {
+    border: 1px solid #999;
+    padding: 4px 6px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .pr-violations th { background: #f0f0f0; }
+  .pr-none {
+    font-size: 12px;
+    color: #333;
+    margin: 2px 2px 0 2px;
+  }
+
+  .pr-footer {
+    margin-top: 18px;
+    padding-top: 8px;
+    border-top: 1px solid #999;
+    font-size: 10px;
+    color: #333;
+    line-height: 1.5;
+  }
+}
