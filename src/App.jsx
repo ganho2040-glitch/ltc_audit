@@ -386,6 +386,10 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
   )
 }
 
+// 사전신청 제출처. ⚠️ 실제 Formspree 폼 ID로 교체해야 전송이 동작합니다.
+// (자리표시자 상태에서는 네트워크 전송 없이 완료 화면만 표시)
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID'
+
 function App() {
   // 앱을 켜자마자 샘플 5명이 자동으로 보이게 한다.
   const [recipients, setRecipients] = useState(() => getSampleData())
@@ -394,6 +398,35 @@ function App() {
   const fileInputRef = useRef(null)
   // 보고서 상단에 들어갈 메타 정보 (비워도 됨)
   const [reportMeta, setReportMeta] = useState({ org: '', month: '', auditor: '' })
+  // 사전신청(페이크도어) 폼 상태
+  const [preReg, setPreReg] = useState({ contact: '', center: '', consent: false })
+  const [preRegDone, setPreRegDone] = useState(false)
+
+  async function submitPreReg(e) {
+    e.preventDefault()
+    if (!preReg.contact.trim() || !preReg.consent) return
+    const params = new URLSearchParams(window.location.search)
+    const payload = {
+      contact: preReg.contact,
+      center: preReg.center,
+      utm_source: params.get('utm_source') || '',
+      utm_medium: params.get('utm_medium') || '',
+      utm_campaign: params.get('utm_campaign') || '',
+    }
+    // 실제 폼 ID가 설정된 경우에만 전송 시도
+    if (!FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
+      try {
+        await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      } catch {
+        /* 네트워크 실패해도 사용자에겐 완료 안내 (지불의향 검증용) */
+      }
+    }
+    setPreRegDone(true)
+  }
 
   function updateRecipient(idx, data) {
     setRecipients(prev => prev.map((r, i) => i === idx ? data : r))
@@ -643,6 +676,57 @@ function App() {
       {recipients.length === 0 && (
         <p className="empty-msg">수급자를 추가하거나 샘플 데이터를 불러오세요.</p>
       )}
+
+      {/* 가격 + 사전신청 (페이크도어 — 지불 의향 검증용) */}
+      <section className="pricing">
+        <h2 className="pricing-head">월간 기록 흐름 점검 서비스</h2>
+        <p className="pricing-sub">이 화면은 가상 샘플입니다. 우리 센터 기록을 매달 점검받으세요.</p>
+        <p className="pricing-price">월 99,000원</p>
+        <p className="pricing-includes">수급자 전원 · 월 1회 점검 리포트 · 평가 전 보완 가이드</p>
+
+        {preRegDone ? (
+          <p className="pricing-done">감사합니다! 정식 출시 시 가장 먼저 안내드리겠습니다.</p>
+        ) : (
+          <form className="prereg-form" onSubmit={submitPreReg}>
+            <label className="prereg-field">
+              <span>이메일 또는 카카오톡 ID</span>
+              <input
+                type="text"
+                value={preReg.contact}
+                onChange={e => setPreReg(p => ({ ...p, contact: e.target.value }))}
+                placeholder="예) center@naver.com 또는 카톡ID"
+                required
+              />
+            </label>
+            <label className="prereg-field">
+              <span>센터명 (선택)</span>
+              <input
+                type="text"
+                value={preReg.center}
+                onChange={e => setPreReg(p => ({ ...p, center: e.target.value }))}
+                placeholder="예) ○○방문요양센터"
+              />
+            </label>
+            <label className="prereg-consent">
+              <input
+                type="checkbox"
+                checked={preReg.consent}
+                onChange={e => setPreReg(p => ({ ...p, consent: e.target.checked }))}
+              />
+              <span>점검표 발송을 위해 입력 정보를 사용하는 것에 동의합니다.</span>
+            </label>
+            <button
+              type="submit"
+              className="prereg-btn"
+              aria-label="월 99,000원 사전신청"
+              disabled={!preReg.contact.trim() || !preReg.consent}
+            >
+              사전신청하기 · 월 99,000원
+            </button>
+          </form>
+        )}
+        <p className="pricing-note">현재 사전신청 중 · 정식 출시 시 가장 먼저 안내드립니다</p>
+      </section>
 
       {/* 인쇄(PDF) 전용 보고서 — 화면에선 숨김, 인쇄할 때만 표시 */}
       <div className="print-report">
