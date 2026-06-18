@@ -311,10 +311,12 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>사회복지사 방문상담</h4>
+            <h4>사회복지사 방문상담 <span className="rule-code">(15명 이상 가산 기관)</span></h4>
             <NumInput label="기관 전체 수급자 수" value={data.totalRecipients} onChange={v => set('totalRecipients', v)} suffix="명" />
-            {data.totalRecipients >= 15 && (
+            {data.totalRecipients >= 15 ? (
               <CheckInput label="이 수급자에게 월 1회 방문상담 수행함" checked={data.socialWorkerVisited} onChange={v => set('socialWorkerVisited', v)} />
+            ) : (
+              <p className="na-note">수급자 15명 미만 — 사회복지사 배치 가산 대상이 아니므로 이 항목은 해당 없음입니다.</p>
             )}
           </div>
 

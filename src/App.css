@@ -498,6 +498,16 @@ h1 {
   color: #9ca3af;
 }
 
+/* 해당 없음 안내 (Y06 15명 미만 등) */
+.na-note {
+  margin: 6px 0 0 0;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
 /* ── R01 총시간 vs 세부항목 위계 ── */
 .r01-total .field-label {
   font-weight: 600;
