@@ -172,7 +172,8 @@ const RULES = [
     action: '즉시 결과평가 실시, 필요 시 급여제공계획 재수립',
     source: '평가매뉴얼 방문요양24',
     judge(d) {
-      return d.outcomeEvalDone === false
+      // 연 1회 결과평가 미실시 또는 결과 반영 30일 내 계획 재작성 미수행
+      return d.outcomeEvalDone === false || d.planRewrite30d === false
     },
   },
 ]

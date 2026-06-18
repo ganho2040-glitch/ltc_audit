@@ -33,7 +33,8 @@ export const COLUMNS = [
   { header: '사회복지사 월방문', key: 'socialWorkerVisited', type: 'bool' },
   { header: '위험도평가 반기실시', key: 'riskAssessmentDone', type: 'bool' },
   { header: '결과평가 반기실시', key: 'outcomeEvalDone', type: 'bool' },
-  { header: '계획 30일내 재작성', key: 'planRewrite30d', type: 'bool' },
+  // 옛 CSV(이 칼럼 없음) 업로드 시 거짓양성 방지를 위해 기본값을 true로
+  { header: '계획 30일내 재작성', key: 'planRewrite30d', type: 'bool', missingDefault: true },
 ]
 
 // 업로드 시 빈 칸이나 누락 칼럼에 쓸 기본값
@@ -127,8 +128,12 @@ export function csvToRecipients(text) {
       const rec = {}
       for (const col of COLUMNS) {
         const idx = colIndex[col.key]
-        const raw = idx === undefined ? '' : cells[idx]
-        rec[col.key] = idx === undefined ? defaultValue(col.type) : stringToCell(raw, col.type)
+        if (idx === undefined) {
+          // 칼럼이 아예 없으면 칼럼별 기본값(missingDefault) 우선, 없으면 타입 기본값
+          rec[col.key] = col.missingDefault ?? defaultValue(col.type)
+        } else {
+          rec[col.key] = stringToCell(cells[idx], col.type)
+        }
       }
       if (!rec.name) rec.name = `수급자 ${recipients.length + 1}`
       recipients.push(rec)
