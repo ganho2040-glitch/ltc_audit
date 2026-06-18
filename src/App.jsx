@@ -4,6 +4,64 @@ import { getSampleData } from './sampleData'
 import { recipientsToCSV, csvToRecipients, EXAMPLE_ROW } from './csv'
 import './App.css'
 
+// 표시 레이어 전용: 내부 코드(id)를 사용자에게 보일 사람 말 제목으로 매핑.
+// rules.js(판정·점수)는 건드리지 않고, 화면 표시만 바꾼다.
+const RULE_LABELS = {
+  R01: '기록지 총시간과 세부 활동시간 일치',
+  R02: 'RFID 태그시간과 청구시간 일치',
+  R03: '청구일수와 근무 가능일수',
+  R04: '배상책임보험 공백기간 청구',
+  R07: '요양보호사 자격·신고',
+  Y01: '욕구사정 최신성 (12개월)',
+  Y02: '급여제공계획서 서명',
+  Y03: '급여제공기록지 서명',
+  Y04: '인지활동형 기록',
+  Y05: '상태 악화 후 조치',
+  Y06: '사회복지사 방문상담',
+  Y09: '위험도평가 (낙상·욕창·인지)',
+  Y11: '급여제공결과평가',
+}
+
+function ruleLabel(id) {
+  return RULE_LABELS[id] || id
+}
+
+// 위반 항목을 데이터가 채워진 사람 말 문장으로 (표시용)
+function humanMessage(v, d) {
+  switch (v.id) {
+    case 'R01': {
+      const sum = (d.physicalMin || 0) + (d.cognitiveMin || 0) + (d.cognitiveManageMin || 0) + (d.emotionalMin || 0) + (d.houseworkMin || 0)
+      return `기록지 총시간(${d.totalMin}분)과 세부 활동시간 합계(${sum}분)가 다릅니다. 평가 전 확인이 필요합니다.`
+    }
+    case 'R02':
+      return `RFID 태그시간(${d.rfidStart || '-'}~${d.rfidEnd || '-'})과 청구시간(${d.billingStart || '-'}~${d.billingEnd || '-'})이 다릅니다.`
+    case 'R03':
+      return `청구일수(${d.billedDays}일)가 근무 가능일수(${d.workDays}일)보다 많습니다.`
+    case 'R04':
+      return '배상책임보험 공백기간에 청구한 내역이 있습니다. 공백기간 급여는 감액 대상입니다.'
+    case 'R07':
+      return '자격증 미보유 또는 지자체 미신고 인력이 급여를 제공했습니다.'
+    case 'Y01':
+      return '최근 욕구사정 후 12개월이 지났습니다(또는 기록 없음). 재사정이 필요합니다.'
+    case 'Y02':
+      return '급여제공계획서에 수급자·보호자 서명이 없습니다.'
+    case 'Y03':
+      return `급여제공기록지 서명 누락 회차(${d.missingSignatures}회)가 있고 생략 사유도 기재되지 않았습니다.`
+    case 'Y04':
+      return '인지활동형인데 특이사항란에 프로그램 운영내용이 기재되지 않았습니다.'
+    case 'Y05':
+      return '상태 악화가 표시됐으나 후속 조치 기록이 없습니다.'
+    case 'Y06':
+      return '수급자 15인 이상 기관에서 이 수급자에 대한 월 1회 방문상담 기록이 없습니다.'
+    case 'Y09':
+      return '낙상·욕창·인지 위험도평가를 반기 1회 실시하지 않았습니다.'
+    case 'Y11':
+      return '급여제공결과평가를 반기 1회 실시하지 않았습니다.'
+    default:
+      return v.desc
+  }
+}
+
 function emptyRecipient() {
   return {
     name: '',
@@ -93,10 +151,10 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
 
       <div className="card-body">
         <div className="section">
-          <h3 className="section-title">📊 숫자 비교 규칙 (R01~R04)</h3>
+          <h3 className="section-title">📊 숫자 비교 항목</h3>
 
           <div className="subsection">
-            <h4>R01 — 시간 비교 (분 단위)</h4>
+            <h4>기록지 총시간과 세부 활동시간 일치 <span className="rule-code">(분 단위)</span></h4>
             <div className="field-grid">
               <NumInput label="기록지 총시간" value={data.totalMin} onChange={v => set('totalMin', v)} suffix="분" />
               <NumInput label="신체활동" value={data.physicalMin} onChange={v => set('physicalMin', v)} suffix="분" />
@@ -114,7 +172,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>R02 — RFID vs 청구 시간</h4>
+            <h4>RFID 태그시간과 청구시간 일치</h4>
             <div className="field-grid">
               <TimeInput label="RFID 시작" value={data.rfidStart} onChange={v => set('rfidStart', v)} />
               <TimeInput label="청구 시작" value={data.billingStart} onChange={v => set('billingStart', v)} />
@@ -124,7 +182,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>R03 — 청구일수 vs 근무일수</h4>
+            <h4>청구일수와 근무 가능일수</h4>
             <div className="field-grid">
               <NumInput label="청구 일수" value={data.billedDays} onChange={v => set('billedDays', v)} suffix="일" />
               <NumInput label="근무 가능일수" value={data.workDays} onChange={v => set('workDays', v)} suffix="일" />
@@ -132,32 +190,32 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>R04 — 보험 공백</h4>
+            <h4>배상책임보험 공백기간 청구</h4>
             <CheckInput label="배상책임보험 공백기간에 청구함" checked={data.insuranceGap} onChange={v => set('insuranceGap', v)} />
           </div>
         </div>
 
         <div className="section">
-          <h3 className="section-title">☑️ 단순 체크 규칙 (R07, Y01~Y06, Y09, Y11)</h3>
+          <h3 className="section-title">☑️ 체크 항목</h3>
 
           <div className="subsection">
-            <h4>R07 — 인력 자격</h4>
+            <h4>요양보호사 자격·신고</h4>
             <CheckInput label="요양보호사 자격증 있음" checked={data.hasLicense} onChange={v => set('hasLicense', v)} />
             <CheckInput label="지자체 신고 완료" checked={data.isRegistered} onChange={v => set('isRegistered', v)} />
           </div>
 
           <div className="subsection">
-            <h4>Y01 — 욕구사정</h4>
+            <h4>욕구사정 최신성 <span className="rule-code">(12개월)</span></h4>
             <DateInput label="최근 욕구사정일" value={data.lastAssessmentDate} onChange={v => set('lastAssessmentDate', v)} />
           </div>
 
           <div className="subsection">
-            <h4>Y02 — 계획서 서명</h4>
+            <h4>급여제공계획서 서명</h4>
             <CheckInput label="급여제공계획서 서명 있음" checked={data.planSigned} onChange={v => set('planSigned', v)} />
           </div>
 
           <div className="subsection">
-            <h4>Y03 — 기록지 서명</h4>
+            <h4>급여제공기록지 서명</h4>
             <NumInput label="서명 누락 회차" value={data.missingSignatures} onChange={v => set('missingSignatures', v)} suffix="회" />
             {data.missingSignatures > 0 && (
               <CheckInput label="서명 생략 사유 기재함" checked={data.signatureReasonWritten} onChange={v => set('signatureReasonWritten', v)} />
@@ -165,7 +223,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>Y04 — 인지활동형 기록</h4>
+            <h4>인지활동형 기록</h4>
             <CheckInput label="인지활동형 수급자임" checked={data.isCognitive} onChange={v => set('isCognitive', v)} />
             {data.isCognitive && (
               <CheckInput label="특이사항란에 프로그램 내용 기재함" checked={data.cognitiveNoteWritten} onChange={v => set('cognitiveNoteWritten', v)} />
@@ -173,7 +231,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>Y05 — 상태 악화 후 조치</h4>
+            <h4>상태 악화 후 조치</h4>
             <CheckInput label="상태 악화(③) 체크됨" checked={data.hasDeteriorated} onChange={v => set('hasDeteriorated', v)} />
             {data.hasDeteriorated && (
               <CheckInput label="악화 후 조치내용 기록함" checked={data.actionAfterDeterioration} onChange={v => set('actionAfterDeterioration', v)} />
@@ -181,7 +239,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>Y06 — 사회복지사 방문상담</h4>
+            <h4>사회복지사 방문상담</h4>
             <NumInput label="기관 전체 수급자 수" value={data.totalRecipients} onChange={v => set('totalRecipients', v)} suffix="명" />
             {data.totalRecipients >= 15 && (
               <CheckInput label="이 수급자에게 월 1회 방문상담 수행함" checked={data.socialWorkerVisited} onChange={v => set('socialWorkerVisited', v)} />
@@ -189,12 +247,12 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>Y09 — 위험도평가</h4>
+            <h4>위험도평가 <span className="rule-code">(낙상·욕창·인지)</span></h4>
             <CheckInput label="낙상·욕창·인지 위험도평가 반기 실시함" checked={data.riskAssessmentDone} onChange={v => set('riskAssessmentDone', v)} />
           </div>
 
           <div className="subsection">
-            <h4>Y11 — 결과평가</h4>
+            <h4>급여제공결과평가</h4>
             <CheckInput label="급여제공결과평가 반기 실시함" checked={data.outcomeEvalDone} onChange={v => set('outcomeEvalDone', v)} />
           </div>
         </div>
@@ -212,7 +270,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           <table className="violation-table">
             <thead>
               <tr>
-                <th>규칙</th>
+                <th>점검 항목</th>
                 <th>내용</th>
                 <th>시정조치</th>
                 <th>근거</th>
@@ -221,8 +279,12 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
             <tbody>
               {result.violations.map(v => (
                 <tr key={v.id} className={v.level === 'critical' ? 'row-critical' : 'row-warning'}>
-                  <td><span className={`badge badge-${v.level}`}>{v.level === 'critical' ? '🔴' : '🟡'} {v.id}</span></td>
-                  <td>{v.desc}</td>
+                  <td className="rule-cell">
+                    <span className={`badge badge-${v.level}`}>{v.level === 'critical' ? '🔴 위험' : '🟡 주의'}</span>
+                    <span className="rule-name">{ruleLabel(v.id)}</span>
+                    <span className="rule-code">{v.id}</span>
+                  </td>
+                  <td>{humanMessage(v, data)}</td>
                   <td>{v.action}</td>
                   <td className="source-cell">{v.source}</td>
                 </tr>
@@ -469,14 +531,14 @@ function App() {
               {res.violations.length > 0 ? (
                 <table className="pr-violations">
                   <thead>
-                    <tr><th>구분</th><th>규칙</th><th>내용</th><th>시정조치</th></tr>
+                    <tr><th>구분</th><th>점검 항목</th><th>내용</th><th>시정조치</th></tr>
                   </thead>
                   <tbody>
                     {res.violations.map(v => (
                       <tr key={v.id}>
                         <td>{v.level === 'critical' ? '🔴 위험' : '🟡 주의'}</td>
-                        <td>{v.id} {v.name}</td>
-                        <td>{v.desc}</td>
+                        <td>{ruleLabel(v.id)}</td>
+                        <td>{humanMessage(v, r)}</td>
                         <td>{v.action}</td>
                       </tr>
                     ))}

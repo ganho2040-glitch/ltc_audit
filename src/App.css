@@ -392,6 +392,22 @@ h1 {
 }
 .badge-critical { background: #fee2e2; color: #991b1b; }
 .badge-warning { background: #fef9c3; color: #854d0e; }
+
+/* 점검 항목 셀 — 사람 말 제목 + 작은 코드 */
+.rule-cell { line-height: 1.5; }
+.rule-name {
+  display: block;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-top: 3px;
+}
+.rule-code {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 400;
+}
+/* 입력 폼 항목 제목 옆 보조 텍스트 */
+h4 .rule-code { margin-left: 2px; }
 .source-cell {
   font-size: 12px;
   color: #888;
