@@ -104,10 +104,11 @@ const RULES = [
     name: '기록지 서명 누락',
     level: 'warning',
     points: 3,
-    desc: '기록지 서명 누락 + 생략 사유 미기재',
-    action: '누락 회차 서명 보완, 생략 사유 기재 확인',
+    desc: '기록지 서명 누락 (서명 불가 사유 비고란 기재 시 예외 인정)',
+    action: '누락 회차 서명 보완, 또는 서명 불가 사유를 비고란에 기재(예외)',
     source: '별지 제12호서식 유의사항',
     judge(d) {
+      // 서명 누락이 있어도 비고란에 사유 기재(signatureReasonWritten)면 예외 — 위반 아님
       return d.missingSignatures > 0 && d.signatureReasonWritten === false
     },
   },

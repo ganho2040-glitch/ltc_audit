@@ -269,7 +269,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
             <h4>급여제공기록지 서명</h4>
             <NumInput label="서명 누락 회차" value={data.missingSignatures} onChange={v => set('missingSignatures', v)} suffix="회" />
             {data.missingSignatures > 0 && (
-              <CheckInput label="서명 생략 사유 기재함" checked={data.signatureReasonWritten} onChange={v => set('signatureReasonWritten', v)} />
+              <CheckInput label="서명 불가 사유를 비고란에 기재함 (예외 인정)" checked={data.signatureReasonWritten} onChange={v => set('signatureReasonWritten', v)} />
             )}
           </div>
 
