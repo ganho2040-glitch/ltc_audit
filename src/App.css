@@ -1,3 +1,47 @@
+/* ── 디자인 토큰 (Section D — Minimalist Editorial) ──
+   이후 Step 1~5에서 하나씩 이 변수로 전환한다.
+   지금은 선언만 두고, 기존 하드코딩 스타일은 아직 유지한다. */
+:root {
+  /* 타이포그래피 */
+  --font-display: 'Noto Serif KR', 'Batang', serif;
+  --font-body: 'Pretendard Variable', 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+
+  /* 색상 (warm monochrome) */
+  --canvas: #FFFFFF;
+  --surface: #F7F6F3;
+  --card: #F9F9F8;
+  --border: #EAEAEA;
+  --text-primary: #1F2A37;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+
+  /* 의미 색 (spot pastels) */
+  --risk-bad-bg: #FDEBEC;
+  --risk-bad-text: #9F2F2D;
+  --risk-warn-bg: #FBF3DB;
+  --risk-warn-text: #956400;
+  --risk-ok-bg: #EDF3EC;
+  --risk-ok-text: #346538;
+  --accent-bg: #E1F3FE;
+  --accent-text: #1F6C9F;
+
+  /* CTA */
+  --cta-bg: #111111;
+  --cta-text: #FFFFFF;
+  --cta-hover: #333333;
+
+  /* 간격 */
+  --section-gap: 32px;
+  --card-padding: 24px;
+  --card-radius: 10px;
+}
+
+/* 기본 폰트만 즉시 적용 (이 단계에서 눈에 보이는 유일한 변화) */
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
 .app {
   text-align: left;
   padding-top: 16px;
