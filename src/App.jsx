@@ -198,7 +198,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
             </div>
             <p className={`calc-hint ${totalMatch ? 'match' : 'mismatch'}`}>
               항목 합계: {detailSum}분
-              {totalMatch ? ' ✓ 일치' : ' ✗ 총시간과 불일치'}
+              {totalMatch ? ' ✓ 일치' : ' — 총시간과 다릅니다. 확인이 필요합니다.'}
             </p>
           </div>
 
@@ -623,7 +623,7 @@ function App() {
 
       <div className="toolbar">
         <button className="btn btn-primary" onClick={addRecipient}>수급자 추가</button>
-        <button className="btn btn-sample" onClick={loadSample}>샘플 데이터 채우기</button>
+        <button className="btn btn-fill" onClick={loadSample}>샘플 데이터 채우기</button>
         <button className="btn btn-sample" onClick={downloadSampleCSV}>샘플 CSV 다운로드</button>
         <button className="btn btn-sample" onClick={() => fileInputRef.current && fileInputRef.current.click()}>CSV 업로드</button>
         <button className="btn btn-clear" onClick={clearAll}>비우기</button>
