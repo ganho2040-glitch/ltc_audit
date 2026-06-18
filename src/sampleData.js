@@ -29,6 +29,7 @@ export function getSampleData() {
       socialWorkerVisited: true,
       riskAssessmentDone: true,
       outcomeEvalDone: true,
+      planRewrite30d: true,
     },
     {
       name: '박순자',
@@ -59,6 +60,7 @@ export function getSampleData() {
       socialWorkerVisited: true,
       riskAssessmentDone: true,
       outcomeEvalDone: true,
+      planRewrite30d: true,
     },
     {
       name: '이정호',
@@ -89,6 +91,7 @@ export function getSampleData() {
       socialWorkerVisited: false,
       riskAssessmentDone: false,
       outcomeEvalDone: true,
+      planRewrite30d: true,
     },
     {
       name: '최미경',
@@ -119,6 +122,7 @@ export function getSampleData() {
       socialWorkerVisited: true,
       riskAssessmentDone: true,
       outcomeEvalDone: false,
+      planRewrite30d: true,
     },
     {
       name: '정대철',
@@ -149,6 +153,7 @@ export function getSampleData() {
       socialWorkerVisited: true,
       riskAssessmentDone: true,
       outcomeEvalDone: true,
+      planRewrite30d: true,
     },
   ]
 }

@@ -33,6 +33,7 @@ export const COLUMNS = [
   { header: '사회복지사 월방문', key: 'socialWorkerVisited', type: 'bool' },
   { header: '위험도평가 반기실시', key: 'riskAssessmentDone', type: 'bool' },
   { header: '결과평가 반기실시', key: 'outcomeEvalDone', type: 'bool' },
+  { header: '계획 30일내 재작성', key: 'planRewrite30d', type: 'bool' },
 ]
 
 // 업로드 시 빈 칸이나 누락 칼럼에 쓸 기본값
@@ -88,6 +89,7 @@ export const EXAMPLE_ROW = {
   isCognitive: false, cognitiveNoteWritten: true,
   hasDeteriorated: false, actionAfterDeterioration: true,
   socialWorkerVisited: true, riskAssessmentDone: true, outcomeEvalDone: true,
+  planRewrite30d: true,
 }
 
 // ── 읽기: CSV 문자열 → { recipients, errors } ──

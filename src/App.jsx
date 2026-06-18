@@ -79,6 +79,7 @@ function emptyRecipient() {
     hasDeteriorated: false, actionAfterDeterioration: true,
     totalRecipients: 0, socialWorkerVisited: true,
     riskAssessmentDone: true, outcomeEvalDone: true,
+    planRewrite30d: true,
   }
 }
 
@@ -287,8 +288,9 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>급여제공결과평가</h4>
+            <h4>급여제공결과평가 <span className="rule-code">(연 1회 이상 + 30일 내 계획 재작성)</span></h4>
             <CheckInput label="급여제공결과평가 연 1회 실시함" checked={data.outcomeEvalDone} onChange={v => set('outcomeEvalDone', v)} />
+            <CheckInput label="결과 반영해 30일 내 계획 재작성함" checked={data.planRewrite30d} onChange={v => set('planRewrite30d', v)} />
           </div>
         </div>
       </div>
