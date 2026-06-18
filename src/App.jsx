@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { judgeRecipient, getGradeLabel, getGradeColor } from './rules'
+import { judgeRecipient, getGradeColor } from './rules'
 import { getSampleData } from './sampleData'
 import { recipientsToCSV, csvToRecipients, EXAMPLE_ROW } from './csv'
 import './App.css'
@@ -7,23 +7,31 @@ import './App.css'
 // 표시 레이어 전용: 내부 코드(id)를 사용자에게 보일 사람 말 제목으로 매핑.
 // rules.js(판정·점수)는 건드리지 않고, 화면 표시만 바꾼다.
 const RULE_LABELS = {
-  R01: '기록지 총시간과 세부 활동시간 일치',
-  R02: 'RFID 태그시간과 청구시간 일치',
-  R03: '청구일수와 근무 가능일수',
-  R04: '배상책임보험 공백기간 청구',
-  R07: '요양보호사 자격·신고',
-  Y01: '욕구사정 최신성 (회계연도 기준 연 1회)',
-  Y02: '급여제공계획서 서명',
-  Y03: '급여제공기록지 서명',
-  Y04: '인지활동형 기록',
-  Y05: '상태 악화 후 조치',
-  Y06: '사회복지사 방문상담',
-  Y09: '위험도평가 (낙상·욕창·인지)',
-  Y11: '급여제공결과평가',
+  R01: '기록지 총시간과 세부 활동시간이 맞지 않습니다.',
+  R02: '태그/기록 시간과 청구 예정 시간이 일치하는지 확인이 필요합니다.',
+  R03: '청구일수와 실제 근무 가능일수가 맞는지 확인이 필요합니다.',
+  R04: '보험 공백기간에 청구가 포함되었는지 확인이 필요합니다.',
+  R07: '요양보호사 자격 및 인력신고 상태 확인이 필요합니다.',
+  Y01: '평가연도 내 욕구사정 기록 및 계획 반영 여부 확인이 필요합니다.',
+  Y02: '급여제공계획서 설명 및 확인서명 여부 확인이 필요합니다.',
+  Y03: '급여제공기록지 서명 누락 여부 확인이 필요합니다.',
+  Y04: '인지활동형 수급자 여부와 제공기록 연결 확인이 필요합니다.',
+  Y05: '상태변화 기록이 방문상담 또는 계획 변경으로 이어졌는지 확인이 필요합니다.',
+  Y06: '월 1회 방문상담 및 상담결과 반영 여부 확인이 필요합니다. (15명 이상 가산 기관)',
+  Y09: '반기별 위험도평가 기록 여부 확인이 필요합니다.',
+  Y11: '급여제공결과평가 및 계획 재작성 여부 확인이 필요합니다.',
 }
 
 function ruleLabel(id) {
   return RULE_LABELS[id] || id
+}
+
+// 표시용 등급 라벨 (Section D: 이모지 금지 — rules.js의 getGradeLabel 대체).
+// 색은 getGradeColor가 담당, 여기선 텍스트만.
+function gradeText(grade) {
+  if (grade === 'good') return '양호'
+  if (grade === 'caution') return '주의'
+  return '위험'
 }
 
 // 표시 레이어 전용: 각 규칙을 센터장의 업무 흐름(청구/평가/현지조사)으로 분류.
@@ -49,15 +57,15 @@ function humanMessage(v, d) {
     case 'R02':
       return `RFID 태그시간(${d.rfidStart || '-'}~${d.rfidEnd || '-'})과 청구시간(${d.billingStart || '-'}~${d.billingEnd || '-'})이 다릅니다. 분 단위 완전일치가 필수는 아니므로 추가 확인이 필요합니다.`
     case 'R03':
-      return `청구일수(${d.billedDays}일)가 근무 가능일수(${d.workDays}일)보다 많습니다.`
+      return `청구일수(${d.billedDays}일)가 근무 가능일수(${d.workDays}일)보다 많습니다. 청구 전 확인이 필요합니다.`
     case 'R04':
-      return '배상책임보험 공백기간에 청구한 내역이 있습니다. 공백기간 급여는 감액 대상입니다.'
+      return '배상책임보험 공백기간에 청구가 포함되었는지 확인이 필요합니다.'
     case 'R07':
-      return '자격증 미보유 또는 지자체 미신고 인력이 급여를 제공했습니다.'
+      return '요양보호사 자격증·지자체 신고 상태 확인이 필요합니다.'
     case 'Y01':
-      return '해당 회계연도(1.1~12.31) 내 욕구사정 기록이 없습니다. 재사정이 필요합니다.'
+      return '해당 평가연도(1.1~12.31) 내 욕구사정 기록 및 계획 반영 여부 확인이 필요합니다.'
     case 'Y02':
-      return '급여제공계획서에 수급자·보호자 서명이 없습니다.'
+      return '급여제공계획서 설명 및 수급자·보호자 확인서명 여부 확인이 필요합니다.'
     case 'Y03':
       return `급여제공기록지 서명 누락 회차(${d.missingSignatures}회)가 있고 생략 사유도 기재되지 않았습니다.`
     case 'Y04':
@@ -166,13 +174,13 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
         className="status-banner"
         style={{ background: getGradeColor(result.grade) }}
       >
-        <span className="status-label">{getGradeLabel(result.grade)}</span>
+        <span className="status-label">{gradeText(result.grade)}</span>
         <span className="status-score">· {result.score}점</span>
       </div>
 
       <div className="card-body">
         <div className="section">
-          <h3 className="section-title">📊 숫자 비교 항목</h3>
+          <h3 className="section-title">숫자 비교 항목</h3>
 
           <div className="subsection">
             <h4>기록지 총시간과 세부 활동시간 일치 <span className="rule-code">(분 단위)</span></h4>
@@ -189,7 +197,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
             </div>
             <p className={`calc-hint ${totalMatch ? 'match' : 'mismatch'}`}>
               항목 합계: {detailSum}분
-              {totalMatch ? ' ✓ 일치' : ' ⚠️ 총시간과 불일치!'}
+              {totalMatch ? ' ✓ 일치' : ' ✗ 총시간과 불일치'}
             </p>
           </div>
 
@@ -253,7 +261,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
         </div>
 
         <div className="section">
-          <h3 className="section-title">☑️ 체크 항목</h3>
+          <h3 className="section-title">체크 항목</h3>
 
           <div className="subsection">
             <h4>요양보호사 자격·신고</h4>
@@ -327,7 +335,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
         <div className="result-header">
           <span className="result-summary-label">이 수급자 종합:</span>
           <span className="result-grade" style={{ color: getGradeColor(result.grade) }}>
-            {getGradeLabel(result.grade)} · {result.score}점
+            {gradeText(result.grade)} · {result.score}점
           </span>
         </div>
 
@@ -345,7 +353,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
               {result.violations.map(v => (
                 <tr key={v.id} className={v.level === 'critical' ? 'row-critical' : 'row-warning'}>
                   <td className="rule-cell">
-                    <span className={`badge badge-${v.level}`}>{v.level === 'critical' ? '🔴 위험' : '🟡 주의'}</span>
+                    <span className={`badge badge-${v.level}`}>{v.level === 'critical' ? '위험' : '주의'}</span>
                     <span className="rule-name">{ruleLabel(v.id)}</span>
                     <span className="rule-code">{v.id}</span>
                   </td>
@@ -522,7 +530,7 @@ function App() {
         <span className="dash-total-sep">/</span>
         주의 <b>{warningCount}건</b>
         <span className="dash-total-sep">/</span>
-        자체점검 <b style={{ color: getGradeColor(overallGrade) }}>{totalScore}점 — {getGradeLabel(overallGrade)}</b>
+        자체점검 <b style={{ color: getGradeColor(overallGrade) }}>{totalScore}점 — {gradeText(overallGrade)}</b>
       </div>
 
       <div className="top3">
@@ -570,12 +578,12 @@ function App() {
       )}
 
       <div className="toolbar">
-        <button className="btn btn-primary" onClick={addRecipient}>＋ 수급자 추가</button>
-        <button className="btn btn-sample" onClick={loadSample}>📋 샘플 데이터 채우기</button>
-        <button className="btn btn-sample" onClick={downloadSampleCSV}>📥 샘플 CSV 다운로드</button>
-        <button className="btn btn-sample" onClick={() => fileInputRef.current && fileInputRef.current.click()}>📤 CSV 업로드</button>
-        <button className="btn btn-clear" onClick={clearAll}>🗑 비우기</button>
-        <button className="btn btn-print" onClick={() => window.print()}>📄 PDF로 저장(인쇄)</button>
+        <button className="btn btn-primary" onClick={addRecipient}>수급자 추가</button>
+        <button className="btn btn-sample" onClick={loadSample}>샘플 데이터 채우기</button>
+        <button className="btn btn-sample" onClick={downloadSampleCSV}>샘플 CSV 다운로드</button>
+        <button className="btn btn-sample" onClick={() => fileInputRef.current && fileInputRef.current.click()}>CSV 업로드</button>
+        <button className="btn btn-clear" onClick={clearAll}>비우기</button>
+        <button className="btn btn-print" onClick={() => window.print()}>PDF로 저장(인쇄)</button>
         <input
           ref={fileInputRef}
           type="file"
@@ -640,9 +648,9 @@ function App() {
           <tbody>
             <tr>
               <th>점검 수급자</th><td>{recipients.length}명</td>
-              <th>🔴 위험</th><td>{criticalCount}건</td>
-              <th>🟡 주의</th><td>{warningCount}건</td>
-              <th>총 리스크 점수</th><td>{totalScore}점 — {getGradeLabel(overallGrade)}</td>
+              <th>위험</th><td>{criticalCount}건</td>
+              <th>주의</th><td>{warningCount}건</td>
+              <th>총 리스크 점수</th><td>{totalScore}점 — {gradeText(overallGrade)}</td>
             </tr>
           </tbody>
         </table>
@@ -684,7 +692,7 @@ function App() {
             <div className="pr-recipient" key={i}>
               <div className="pr-recipient-head">
                 <span className="pr-name">{i + 1}. {r.name || `수급자 ${i + 1}`}</span>
-                <span className="pr-grade">{getGradeLabel(res.grade)} · {res.score}점</span>
+                <span className="pr-grade">{gradeText(res.grade)} · {res.score}점</span>
               </div>
               {res.violations.length > 0 ? (
                 <table className="pr-violations">
@@ -694,7 +702,7 @@ function App() {
                   <tbody>
                     {res.violations.map(v => (
                       <tr key={v.id}>
-                        <td>{v.level === 'critical' ? '🔴 위험' : '🟡 주의'}</td>
+                        <td>{v.level === 'critical' ? '위험' : '주의'}</td>
                         <td>{ruleLabel(v.id)}</td>
                         <td>{humanMessage(v, r)}</td>
                         <td>{v.action}</td>
