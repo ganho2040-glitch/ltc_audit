@@ -26,6 +26,19 @@ function ruleLabel(id) {
   return RULE_LABELS[id] || id
 }
 
+// 표시 레이어 전용: 각 규칙을 센터장의 업무 흐름(청구/평가/현지조사)으로 분류.
+// rules.js(판정·점수)는 그대로. 화면에서 결과를 그룹핑만 한다.
+const RULE_CATEGORY = {
+  R01: 'billing', R02: 'billing', R03: 'billing', R04: 'billing',
+  Y01: 'eval', Y02: 'eval', Y04: 'eval', Y05: 'eval', Y06: 'eval', Y09: 'eval', Y11: 'eval',
+  Y03: 'inspect', R07: 'inspect',
+}
+const CATEGORIES = [
+  { key: 'billing', title: '청구 전 확인', cls: 'dash-billing' },
+  { key: 'eval', title: '평가 전 확인', cls: 'dash-eval' },
+  { key: 'inspect', title: '현지조사 대비', cls: 'dash-inspect' },
+]
+
 // 위반 항목을 데이터가 채워진 사람 말 문장으로 (표시용)
 function humanMessage(v, d) {
   switch (v.id) {
@@ -443,6 +456,34 @@ function App() {
   else if (totalScore < 10) overallGrade = 'caution'
   else overallGrade = 'danger'
 
+  // 카테고리별 그룹핑(새 계산 아님 — 기존 판정 결과를 분류만)
+  function categoryStat(catKey) {
+    let critical = 0, warning = 0, rep = null
+    recipients.forEach((r, i) => {
+      results[i].violations.forEach(v => {
+        if (RULE_CATEGORY[v.id] !== catKey) return
+        if (v.level === 'critical') critical++
+        else warning++
+        // 대표 항목: 위험 우선
+        if (!rep || (v.level === 'critical' && rep.level !== 'critical')) {
+          rep = { name: r.name || `수급자 ${i + 1}`, label: ruleLabel(v.id), level: v.level }
+        }
+      })
+    })
+    return { critical, warning, rep }
+  }
+
+  // 먼저 확인할 TOP3 (위험 우선 정렬 → 상위 3)
+  const allViolations = []
+  recipients.forEach((r, i) => {
+    results[i].violations.forEach(v => {
+      allViolations.push({ name: r.name || `수급자 ${i + 1}`, data: r, v })
+    })
+  })
+  allViolations.sort((a, b) =>
+    (b.v.level === 'critical' ? 1 : 0) - (a.v.level === 'critical' ? 1 : 0))
+  const top3 = allViolations.slice(0, 3)
+
   return (
     <div className="app">
       <h1>1인 방문요양센터장을 위한 월말 리스크 점검표</h1>
@@ -453,25 +494,52 @@ function App() {
         이미 작성된 기록들이 청구 전·평가 전·현지조사 전에 서로 맞는지 점검합니다.
       </div>
 
-      <div className="summary" style={{ borderColor: getGradeColor(overallGrade) }}>
-        <div className="summary-item">
-          <span className="summary-label">점검 수급자</span>
-          <span className="summary-value">{recipients.length}명</span>
-        </div>
-        <div className="summary-item">
-          <span className="summary-label">🔴 위험</span>
-          <span className="summary-value" style={{ color: criticalCount > 0 ? '#dc2626' : undefined }}>{criticalCount}건</span>
-        </div>
-        <div className="summary-item">
-          <span className="summary-label">🟡 주의</span>
-          <span className="summary-value" style={{ color: warningCount > 0 ? '#ca8a04' : undefined }}>{warningCount}건</span>
-        </div>
-        <div className="summary-item">
-          <span className="summary-label">총 리스크 점수</span>
-          <span className="summary-value" style={{ color: getGradeColor(overallGrade), fontWeight: 700 }}>
-            {totalScore}점 — {getGradeLabel(overallGrade)}
-          </span>
-        </div>
+      <div className="dashboard">
+        {CATEGORIES.map(cat => {
+          const s = categoryStat(cat.key)
+          const clean = s.critical === 0 && s.warning === 0
+          return (
+            <div className={`dash-card ${cat.cls}`} key={cat.key}>
+              <span className="dash-bar" />
+              <h2 className="dash-title">{cat.title}</h2>
+              <div className="dash-counts">
+                <span className="dash-count dash-count-bad">위험 {s.critical}</span>
+                <span className="dash-dot">·</span>
+                <span className="dash-count dash-count-warn">주의 {s.warning}</span>
+              </div>
+              <p className="dash-rep">
+                {clean ? '확인할 항목이 없습니다.' : `${s.rep.name} — ${s.rep.label}`}
+              </p>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="dash-total" style={{ borderColor: getGradeColor(overallGrade) }}>
+        점검 수급자 <b>{recipients.length}명</b>
+        <span className="dash-total-sep">/</span>
+        총 위험 <b>{criticalCount}건</b>
+        <span className="dash-total-sep">/</span>
+        주의 <b>{warningCount}건</b>
+        <span className="dash-total-sep">/</span>
+        자체점검 <b style={{ color: getGradeColor(overallGrade) }}>{totalScore}점 — {getGradeLabel(overallGrade)}</b>
+      </div>
+
+      <div className="top3">
+        <h2 className="top3-head">대표자가 이번 달 먼저 확인할 항목</h2>
+        {top3.length === 0 ? (
+          <p className="top3-empty">확인할 항목이 없습니다.</p>
+        ) : (
+          <ol className="top3-list">
+            {top3.map((item, i) => (
+              <li className="top3-item" key={i}>
+                <span className="top3-title">{item.name} — {ruleLabel(item.v.id)}</span>
+                <span className="top3-detail">{humanMessage(item.v, item.data)}</span>
+                <span className="top3-action">→ {item.v.action}</span>
+              </li>
+            ))}
+          </ol>
+        )}
       </div>
 
       <p className="disclaimer">
@@ -578,6 +646,37 @@ function App() {
             </tr>
           </tbody>
         </table>
+
+        <table className="pr-categories">
+          <thead>
+            <tr><th>업무 흐름</th><th>위험</th><th>주의</th><th>대표 항목</th></tr>
+          </thead>
+          <tbody>
+            {CATEGORIES.map(cat => {
+              const s = categoryStat(cat.key)
+              const clean = s.critical === 0 && s.warning === 0
+              return (
+                <tr key={cat.key}>
+                  <td>{cat.title}</td>
+                  <td>{s.critical}건</td>
+                  <td>{s.warning}건</td>
+                  <td>{clean ? '—' : `${s.rep.name} · ${s.rep.label}`}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+
+        {top3.length > 0 && (
+          <div className="pr-top3">
+            <p className="pr-top3-head">먼저 확인할 항목</p>
+            <ol>
+              {top3.map((item, i) => (
+                <li key={i}>{item.name} — {ruleLabel(item.v.id)} → {item.v.action}</li>
+              ))}
+            </ol>
+          </div>
+        )}
 
         {recipients.map((r, i) => {
           const res = results[i]

@@ -105,6 +105,116 @@ h1 {
   font-weight: 600;
 }
 
+/* ── 대시보드 (청구/평가/현지조사 비대칭 벤토 그리드) ── */
+.dashboard {
+  display: grid;
+  grid-template-columns: 1.4fr 1.4fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.dash-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 24px;
+  cursor: default; /* S9: 클릭 아님, 정보 표시 */
+  overflow: hidden;
+}
+/* S1: 카드 상단 시그니처 컬러 바 */
+.dash-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.dash-billing .dash-bar { background: var(--accent-text); }
+.dash-eval .dash-bar { background: var(--risk-warn-text); }
+.dash-inspect .dash-bar { background: var(--risk-bad-text); }
+.dash-title {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 4px 0 12px 0;
+}
+.dash-counts {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+}
+.dash-count-bad { color: var(--risk-bad-text); }
+.dash-count-warn { color: var(--risk-warn-text); }
+.dash-dot { color: var(--text-muted); font-size: 18px; }
+.dash-rep {
+  margin: 12px 0 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* 총합 한 줄 */
+.dash-total {
+  background: var(--surface);
+  border-left: 5px solid #ccc;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.dash-total b { color: var(--text-primary); font-weight: 700; }
+.dash-total-sep { margin: 0 8px; color: var(--text-muted); }
+
+/* 먼저 확인할 TOP3 */
+.top3 {
+  margin: 16px 0;
+  padding: 20px 24px;
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+}
+.top3-head {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 14px 0;
+}
+.top3-empty { color: var(--risk-ok-text); margin: 0; }
+.top3-list { margin: 0; padding-left: 22px; }
+.top3-item {
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+.top3-item:last-child { margin-bottom: 0; }
+.top3-title {
+  display: block;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+.top3-detail {
+  display: block;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.top3-action {
+  display: block;
+  font-size: 14px;
+  color: var(--accent-text);
+  margin-top: 2px;
+}
+
+/* 모바일: 단일 컬럼 */
+@media (max-width: 720px) {
+  .dashboard { grid-template-columns: 1fr; gap: 12px; }
+  .dash-card { padding: 16px; }
+}
+
 /* ── 면책 한 줄 ── */
 .disclaimer {
   margin: 8px 2px 0 2px;
@@ -639,6 +749,26 @@ h4 .rule-code { margin-left: 2px; }
     white-space: nowrap;
     width: 1%;
   }
+
+  .pr-categories {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+  .pr-categories th, .pr-categories td {
+    border: 1px solid #999;
+    padding: 5px 8px;
+    text-align: left;
+  }
+  .pr-categories th { background: #f0f0f0; }
+  .pr-top3 {
+    margin-bottom: 14px;
+    font-size: 12px;
+  }
+  .pr-top3-head { font-weight: 700; margin: 0 0 4px 0; }
+  .pr-top3 ol { margin: 0; padding-left: 18px; }
+  .pr-top3 li { margin-bottom: 2px; }
 
   .pr-recipient {
     margin-bottom: 12px;
