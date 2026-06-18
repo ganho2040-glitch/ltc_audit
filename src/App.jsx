@@ -173,11 +173,46 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
 
           <div className="subsection">
             <h4>RFID 태그시간과 청구시간 일치</h4>
-            <div className="field-grid">
-              <TimeInput label="RFID 시작" value={data.rfidStart} onChange={v => set('rfidStart', v)} />
-              <TimeInput label="청구 시작" value={data.billingStart} onChange={v => set('billingStart', v)} />
-              <TimeInput label="RFID 종료" value={data.rfidEnd} onChange={v => set('rfidEnd', v)} />
-              <TimeInput label="청구 종료" value={data.billingEnd} onChange={v => set('billingEnd', v)} />
+            <div className="rfid-compare">
+              {/* 열 헤더 (데스크톱) */}
+              <div className="rfid-colheads">
+                <span className="rfid-corner" />
+                <span>RFID</span>
+                <span>청구</span>
+                <span className="rfid-match-head">일치</span>
+              </div>
+
+              {/* 시작 행: RFID 시작 ↔ 청구 시작 나란히 */}
+              <div className="rfid-row">
+                <span className="rfid-rowhead">시작</span>
+                <label className="rfid-cell">
+                  <span className="rfid-celllabel">RFID</span>
+                  <input type="time" value={data.rfidStart} onChange={e => set('rfidStart', e.target.value)} />
+                </label>
+                <label className="rfid-cell">
+                  <span className="rfid-celllabel">청구</span>
+                  <input type="time" value={data.billingStart} onChange={e => set('billingStart', e.target.value)} />
+                </label>
+                <span className={`rfid-match ${data.rfidStart === data.billingStart ? 'ok' : 'bad'}`}>
+                  {data.rfidStart === data.billingStart ? '✓' : '✗'}
+                </span>
+              </div>
+
+              {/* 종료 행: RFID 종료 ↔ 청구 종료 나란히 */}
+              <div className="rfid-row">
+                <span className="rfid-rowhead">종료</span>
+                <label className="rfid-cell">
+                  <span className="rfid-celllabel">RFID</span>
+                  <input type="time" value={data.rfidEnd} onChange={e => set('rfidEnd', e.target.value)} />
+                </label>
+                <label className="rfid-cell">
+                  <span className="rfid-celllabel">청구</span>
+                  <input type="time" value={data.billingEnd} onChange={e => set('billingEnd', e.target.value)} />
+                </label>
+                <span className={`rfid-match ${data.rfidEnd === data.billingEnd ? 'ok' : 'bad'}`}>
+                  {data.rfidEnd === data.billingEnd ? '✓' : '✗'}
+                </span>
+              </div>
             </div>
           </div>
 

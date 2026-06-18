@@ -334,6 +334,75 @@ h1 {
   margin: 6px 0 0 0;
 }
 
+/* ── RFID vs 청구 시간 비교 표 ── */
+.rfid-compare { margin-top: 4px; }
+.rfid-colheads,
+.rfid-row {
+  display: grid;
+  grid-template-columns: 48px minmax(120px, 1fr) minmax(120px, 1fr) 52px;
+  gap: 8px 12px;
+  align-items: center;
+}
+.rfid-colheads { margin-bottom: 4px; }
+.rfid-colheads > span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+}
+.rfid-row { margin-bottom: 6px; }
+.rfid-rowhead {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+.rfid-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.rfid-cell input[type="time"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+.rfid-celllabel { display: none; } /* 데스크톱: 열 헤더가 라벨 역할 */
+.rfid-match {
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+.rfid-match.ok { color: #1e7e34; }
+.rfid-match.bad { color: #c0392b; }
+
+/* 모바일: 시작 묶음 / 종료 묶음으로 세로로 쌓기 */
+@media (max-width: 520px) {
+  .rfid-colheads { display: none; }
+  .rfid-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px 12px;
+    position: relative;
+  }
+  .rfid-rowhead { font-size: 15px; }
+  .rfid-celllabel {
+    display: inline-block;
+    min-width: 44px;
+    font-size: 13px;
+    color: #6b7280;
+  }
+  .rfid-match {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+  }
+}
+
 /* ── 판정 결과 ── */
 .card-result {
   padding: 16px 20px;
