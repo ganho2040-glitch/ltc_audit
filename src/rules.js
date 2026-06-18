@@ -79,9 +79,8 @@ const RULES = [
     action: '즉시 재사정 실시, 사정 주기 관리 체계 구축',
     source: '「고시」제57조 제2항',
     judge(d) {
-      if (!d.lastAssessmentDate) return true
-      const diff = new Date() - new Date(d.lastAssessmentDate)
-      return diff > 365 * 24 * 60 * 60 * 1000
+      // 해당 회계연도 내 욕구사정 미실시 = 위반 (날짜 lastAssessmentDate는 기록용)
+      return d.assessmentDoneThisYear === false
     },
   },
   // 근거: Y02, 「시행규칙」제18조
