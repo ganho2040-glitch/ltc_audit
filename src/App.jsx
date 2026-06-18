@@ -56,7 +56,7 @@ function humanMessage(v, d) {
     case 'Y09':
       return '낙상·욕창·인지 위험도평가를 반기 1회 실시하지 않았습니다.'
     case 'Y11':
-      return '급여제공결과평가를 반기 1회 실시하지 않았습니다.'
+      return '급여제공결과평가를 연 1회 이상 실시하지 않았습니다.'
     default:
       return v.desc
   }
@@ -288,7 +288,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
 
           <div className="subsection">
             <h4>급여제공결과평가</h4>
-            <CheckInput label="급여제공결과평가 반기 실시함" checked={data.outcomeEvalDone} onChange={v => set('outcomeEvalDone', v)} />
+            <CheckInput label="급여제공결과평가 연 1회 실시함" checked={data.outcomeEvalDone} onChange={v => set('outcomeEvalDone', v)} />
           </div>
         </div>
       </div>
