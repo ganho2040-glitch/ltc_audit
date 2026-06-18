@@ -833,13 +833,21 @@ h4 .rule-code { margin-left: 2px; }
 .prereg-btn:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
 .prereg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .pricing-done {
+  background: var(--risk-ok-bg);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+}
+.pricing-done-1 {
   font-size: 16px;
   font-weight: 600;
   color: var(--risk-ok-text);
-  background: var(--risk-ok-bg);
-  padding: 16px;
-  border-radius: 8px;
-  margin: 0 auto;
+  margin: 0 0 6px 0;
+}
+.pricing-done-2 {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
 }
 .pricing-note {
   font-size: 13px;

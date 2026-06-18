@@ -682,7 +682,10 @@ function App() {
         <p className="pricing-includes">수급자 전원 · 월 1회 점검 리포트 · 평가 전 보완 가이드</p>
 
         {preRegDone ? (
-          <p className="pricing-done">감사합니다! 정식 출시 시 가장 먼저 안내드리겠습니다.</p>
+          <div className="pricing-done">
+            <p className="pricing-done-1">신청이 완료되었습니다.</p>
+            <p className="pricing-done-2">정식 출시 시 가장 먼저 안내드리겠습니다.</p>
+          </div>
         ) : (
           <form className="prereg-form" onSubmit={submitPreReg}>
             <label className="prereg-field">
