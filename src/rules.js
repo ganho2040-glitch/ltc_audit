@@ -178,6 +178,22 @@ const RULES = [
       return d.outcomeEvalDone === false || d.planRewrite30d === false
     },
   },
+  // 근거: Y18, 평가매뉴얼 지표 18·18-2 (급여 변경 후 계획서 미갱신 → 연쇄 불인정)
+  {
+    id: 'Y18',
+    name: '급여 변경 후 계획서 미갱신',
+    level: 'critical',
+    points: 7,
+    desc: '급여 변경(시간·제공자·횟수) 후 급여제공계획서가 갱신되지 않았습니다',
+    action: '변경된 내용에 맞게 급여제공계획서를 재작성하고 공단 통보하세요',
+    source: '평가매뉴얼 지표 18, 18-2',
+    judge(d) {
+      // 급여 변경 없음 → 해당 없음 → 위반 아님 (거짓양성 0)
+      if (d.benefitChanged === false) return false
+      // 변경 있는데 계획서 재작성 안 함 → 위반
+      return d.planRewrittenAfterChange === false
+    },
+  },
 ]
 
 export function judgeRecipient(data) {
