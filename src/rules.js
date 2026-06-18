@@ -94,7 +94,8 @@ const RULES = [
     action: '서명 보완 수집, 향후 서명 절차 준수',
     source: '「시행규칙」제18조',
     judge(d) {
-      return d.planSigned === false
+      // 서명 없음이어도 예외(우편+유선 근거 또는 전자서명)면 위반 아님
+      return d.planSigned === false && d.planSignExempted !== true
     },
   },
   // 근거: Y03, 별지 제12호서식 유의사항
