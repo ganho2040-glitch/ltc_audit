@@ -39,6 +39,9 @@ export const COLUMNS = [
   { header: '결과평가 반기실시', key: 'outcomeEvalDone', type: 'bool' },
   // 옛 CSV(이 칼럼 없음) 업로드 시 거짓양성 방지를 위해 기본값을 true로
   { header: '계획 30일내 재작성', key: 'planRewrite30d', type: 'bool', missingDefault: true },
+  // 옛 CSV에 없으면 "변경 없음(false)" → Y18 해당 없음 → 거짓양성 0
+  { header: '급여변경발생', key: 'benefitChanged', type: 'bool', missingDefault: false },
+  { header: '변경후계획서재작성', key: 'planRewrittenAfterChange', type: 'bool', missingDefault: false },
 ]
 
 // 업로드 시 빈 칸이나 누락 칼럼에 쓸 기본값
@@ -96,6 +99,7 @@ export const EXAMPLE_ROW = {
   hasDeteriorated: false, actionAfterDeterioration: true,
   socialWorkerVisited: true, riskAssessmentDone: true, outcomeEvalDone: true,
   planRewrite30d: true,
+  benefitChanged: false, planRewrittenAfterChange: false,
 }
 
 // ── 읽기: CSV 문자열 → { recipients, errors } ──

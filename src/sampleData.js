@@ -2,6 +2,7 @@ export function getSampleData() {
   return [
     {
       name: '김영순',
+      benefitChanged: false, planRewrittenAfterChange: false,
       totalMin: 180,
       physicalMin: 60,
       cognitiveMin: 40,
@@ -35,6 +36,7 @@ export function getSampleData() {
     },
     {
       name: '박순자',
+      benefitChanged: true, planRewrittenAfterChange: false,
       totalMin: 240,
       physicalMin: 90,
       cognitiveMin: 50,
@@ -68,6 +70,7 @@ export function getSampleData() {
     },
     {
       name: '이정호',
+      benefitChanged: false, planRewrittenAfterChange: false,
       totalMin: 150,
       physicalMin: 50,
       cognitiveMin: 30,
@@ -101,6 +104,7 @@ export function getSampleData() {
     },
     {
       name: '최미경',
+      benefitChanged: false, planRewrittenAfterChange: false,
       totalMin: 120,
       physicalMin: 40,
       cognitiveMin: 0,
@@ -134,6 +138,7 @@ export function getSampleData() {
     },
     {
       name: '정대철',
+      benefitChanged: false, planRewrittenAfterChange: false,
       totalMin: 200,
       physicalMin: 60,
       cognitiveMin: 40,

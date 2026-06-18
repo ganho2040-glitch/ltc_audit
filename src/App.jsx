@@ -106,6 +106,7 @@ function emptyRecipient() {
     totalRecipients: 0, socialWorkerVisited: true,
     riskAssessmentDone: true, outcomeEvalDone: true,
     planRewrite30d: true,
+    benefitChanged: false, planRewrittenAfterChange: false,
   }
 }
 
