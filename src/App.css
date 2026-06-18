@@ -48,11 +48,34 @@ body {
 }
 
 h1 {
-  font-size: 24px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-primary);
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 4px;
+}
+
+/* 제목 아래 보조 문구 */
+.app-subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 4px 0 20px 0;
+}
+
+/* 차별점 배너 — "기록을 대신 쓰지 않는다" */
+.intro-banner {
+  background: var(--surface);
+  border-left: 3px solid var(--accent-text);
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  border-radius: 0 6px 6px 0;
+  margin-bottom: 20px;
 }
 
 /* ── 요약 바 ── */

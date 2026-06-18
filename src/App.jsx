@@ -445,7 +445,13 @@ function App() {
 
   return (
     <div className="app">
-      <h1>방문요양 월간 기록 리스크 감사</h1>
+      <h1>1인 방문요양센터장을 위한 월말 리스크 점검표</h1>
+      <p className="app-subtitle">혼자 운영해도, 평가 전에 놓치면 안 되는 기록 흐름을 먼저 보여드립니다.</p>
+
+      <div className="intro-banner">
+        이 앱은 기록을 대신 작성하지 않습니다.
+        이미 작성된 기록들이 청구 전·평가 전·현지조사 전에 서로 맞는지 점검합니다.
+      </div>
 
       <div className="summary" style={{ borderColor: getGradeColor(overallGrade) }}>
         <div className="summary-item">
@@ -469,8 +475,9 @@ function App() {
       </div>
 
       <p className="disclaimer">
-        ※ 점수는 환수·평가 위험도를 가늠하기 위한 자체 지표이며, 공단 공식 점수가 아닙니다.
-        빨간(위험) 항목은 공식 부당청구 유형에 근거합니다.
+        ※ 본 점검은 공단 평가 결과나 현지조사 결과를 보장하지 않습니다.
+        위험 또는 주의 항목은 공식 판정이 아니라, 기관 내부에서 추가 확인이
+        필요한 기록 흐름을 의미합니다.
       </p>
 
       {recipients.length > 0 && (
