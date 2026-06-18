@@ -12,7 +12,7 @@ const RULE_LABELS = {
   R03: '청구일수와 근무 가능일수',
   R04: '배상책임보험 공백기간 청구',
   R07: '요양보호사 자격·신고',
-  Y01: '욕구사정 최신성 (12개월)',
+  Y01: '욕구사정 최신성 (회계연도 기준 연 1회)',
   Y02: '급여제공계획서 서명',
   Y03: '급여제공기록지 서명',
   Y04: '인지활동형 기록',
@@ -42,7 +42,7 @@ function humanMessage(v, d) {
     case 'R07':
       return '자격증 미보유 또는 지자체 미신고 인력이 급여를 제공했습니다.'
     case 'Y01':
-      return '최근 욕구사정 후 12개월이 지났습니다(또는 기록 없음). 재사정이 필요합니다.'
+      return '해당 회계연도(1.1~12.31) 내 욕구사정 기록이 없습니다. 재사정이 필요합니다.'
     case 'Y02':
       return '급여제공계획서에 수급자·보호자 서명이 없습니다.'
     case 'Y03':
@@ -247,7 +247,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           </div>
 
           <div className="subsection">
-            <h4>욕구사정 최신성 <span className="rule-code">(12개월)</span></h4>
+            <h4>욕구사정 최신성 <span className="rule-code">(회계연도 기준 연 1회)</span></h4>
             <DateInput label="최근 욕구사정일" value={data.lastAssessmentDate} onChange={v => set('lastAssessmentDate', v)} />
           </div>
 
