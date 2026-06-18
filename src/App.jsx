@@ -20,6 +20,7 @@ const RULE_LABELS = {
   Y06: '월 1회 방문상담 및 상담결과 반영 여부 확인이 필요합니다. (15명 이상 가산 기관)',
   Y09: '반기별 위험도평가 기록 여부 확인이 필요합니다.',
   Y11: '급여제공결과평가 및 계획 재작성 여부 확인이 필요합니다.',
+  Y18: '급여 변경(시간·제공자·횟수) 후 급여제공계획서가 갱신되었는지 확인이 필요합니다',
 }
 
 function ruleLabel(id) {
@@ -38,7 +39,7 @@ function gradeText(grade) {
 // rules.js(판정·점수)는 그대로. 화면에서 결과를 그룹핑만 한다.
 const RULE_CATEGORY = {
   R01: 'billing', R02: 'billing', R03: 'billing', R04: 'billing',
-  Y01: 'eval', Y02: 'eval', Y04: 'eval', Y05: 'eval', Y06: 'eval', Y09: 'eval', Y11: 'eval',
+  Y01: 'eval', Y02: 'eval', Y04: 'eval', Y05: 'eval', Y06: 'eval', Y09: 'eval', Y11: 'eval', Y18: 'eval',
   Y03: 'inspect', R07: 'inspect',
 }
 const CATEGORIES = [
@@ -78,6 +79,8 @@ function humanMessage(v, d) {
       return '낙상·욕창·인지 위험도평가를 반기 1회 실시하지 않았습니다.'
     case 'Y11':
       return '급여제공결과평가를 연 1회 이상 실시하지 않았습니다.'
+    case 'Y18':
+      return '급여 변경이 발생했으나 급여제공계획서가 갱신되지 않았습니다. 지표 18·18-2 연쇄 감점 가능성이 있으므로 계획서 재작성 및 공단 통보를 확인하세요.'
     default:
       return v.desc
   }
@@ -329,6 +332,14 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
             <h4>급여제공결과평가 <span className="rule-code">(연 1회 이상 + 30일 내 계획 재작성)</span></h4>
             <CheckInput label="급여제공결과평가 연 1회 실시함" checked={data.outcomeEvalDone} onChange={v => set('outcomeEvalDone', v)} />
             <CheckInput label="결과 반영해 30일 내 계획 재작성함" checked={data.planRewrite30d} onChange={v => set('planRewrite30d', v)} />
+          </div>
+
+          <div className="subsection">
+            <h4>급여 변경 후 계획서 갱신</h4>
+            <CheckInput label="최근 급여 변경 발생 (시간·제공자·횟수 중 하나라도)" checked={!!data.benefitChanged} onChange={v => set('benefitChanged', v)} />
+            {data.benefitChanged && (
+              <CheckInput label="변경 후 급여제공계획서 재작성함" checked={!!data.planRewrittenAfterChange} onChange={v => set('planRewrittenAfterChange', v)} />
+            )}
           </div>
         </div>
       </div>
