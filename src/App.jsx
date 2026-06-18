@@ -34,7 +34,7 @@ function humanMessage(v, d) {
       return `기록지 총시간(${d.totalMin}분)과 세부 활동시간 합계(${sum}분)가 다릅니다. 평가 전 확인이 필요합니다.`
     }
     case 'R02':
-      return `RFID 태그시간(${d.rfidStart || '-'}~${d.rfidEnd || '-'})과 청구시간(${d.billingStart || '-'}~${d.billingEnd || '-'})이 다릅니다.`
+      return `RFID 태그시간(${d.rfidStart || '-'}~${d.rfidEnd || '-'})과 청구시간(${d.billingStart || '-'}~${d.billingEnd || '-'})이 다릅니다. 분 단위 완전일치가 필수는 아니므로 추가 확인이 필요합니다.`
     case 'R03':
       return `청구일수(${d.billedDays}일)가 근무 가능일수(${d.workDays}일)보다 많습니다.`
     case 'R04':

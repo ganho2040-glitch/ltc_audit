@@ -17,15 +17,16 @@ const RULES = [
       return d.totalMin !== sum
     },
   },
-  // 근거: R02, 「고시」제15조·제16조, 거짓청구 유형 고시 제3조 제3호
+  // 근거: R02, 「고시」제15조·제16조. RFID는 참여율·청구활용률(비율)로 평가하고
+  // 수기 보완도 인정되므로, 분 단위 불일치는 부당청구 단정이 아니라 '확인 필요' 수준으로 둠.
   {
     id: 'R02',
-    name: 'RFID 시간 불일치',
-    level: 'critical',
-    points: 10,
-    desc: 'RFID 태그 시간 ≠ 청구 시간',
-    action: 'RFID 기록 대조, 불일치 건 자진신고·환수',
-    source: '「고시」제15·16조, 거짓청구 유형 고시 제3조',
+    name: 'RFID 시간 불일치 (확인 필요)',
+    level: 'warning',
+    points: 3,
+    desc: 'RFID 태그 시간과 청구 시간 불일치 — 추가 확인 필요',
+    action: 'RFID 기록과 기록지 대조 후 사유 확인 (분 단위 완전일치가 필수는 아님)',
+    source: '「고시」제15·16조',
     judge(d) {
       return d.rfidStart !== d.billingStart || d.rfidEnd !== d.billingEnd
     },
