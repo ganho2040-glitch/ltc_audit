@@ -310,6 +310,17 @@ h1 {
   min-width: 0;
 }
 
+/* ── Y01 욕구사정: 날짜(기록용) + 체크(판정 기준) 구분 ── */
+.y01-record {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.record-note {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
 /* ── R01 총시간 vs 세부항목 위계 ── */
 .r01-total .field-label {
   font-weight: 600;

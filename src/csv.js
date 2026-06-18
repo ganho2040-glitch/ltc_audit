@@ -21,6 +21,8 @@ export const COLUMNS = [
   { header: '서명누락 회차', key: 'missingSignatures', type: 'number' },
   { header: '기관 전체 수급자수', key: 'totalRecipients', type: 'number' },
   { header: '최근 욕구사정일', key: 'lastAssessmentDate', type: 'date' },
+  // 옛 CSV(이 칼럼 없음) 업로드 시 거짓양성 방지를 위해 기본값을 true로
+  { header: '회계연도 내 욕구사정', key: 'assessmentDoneThisYear', type: 'bool', missingDefault: true },
   { header: '보험공백 있음', key: 'insuranceGap', type: 'bool' },
   { header: '자격증 있음', key: 'hasLicense', type: 'bool' },
   { header: '지자체신고 완료', key: 'isRegistered', type: 'bool' },
@@ -85,6 +87,7 @@ export const EXAMPLE_ROW = {
   billedDays: 22, workDays: 22,
   missingSignatures: 0, totalRecipients: 20,
   lastAssessmentDate: '2025-03-10',
+  assessmentDoneThisYear: true,
   insuranceGap: false, hasLicense: true, isRegistered: true,
   planSigned: true, signatureReasonWritten: true,
   isCognitive: false, cognitiveNoteWritten: true,

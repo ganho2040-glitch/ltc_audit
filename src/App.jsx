@@ -73,6 +73,7 @@ function emptyRecipient() {
     insuranceGap: false,
     hasLicense: true, isRegistered: true,
     lastAssessmentDate: '',
+    assessmentDoneThisYear: true,
     planSigned: true,
     missingSignatures: 0, signatureReasonWritten: true,
     isCognitive: false, cognitiveNoteWritten: true,
@@ -248,7 +249,11 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
 
           <div className="subsection">
             <h4>욕구사정 최신성 <span className="rule-code">(회계연도 기준 연 1회)</span></h4>
-            <DateInput label="최근 욕구사정일" value={data.lastAssessmentDate} onChange={v => set('lastAssessmentDate', v)} />
+            <div className="y01-record">
+              <DateInput label="최근 욕구사정일" value={data.lastAssessmentDate} onChange={v => set('lastAssessmentDate', v)} />
+              <span className="record-note">(기록용)</span>
+            </div>
+            <CheckInput label="해당 회계연도 내 욕구사정 실시함" checked={data.assessmentDoneThisYear} onChange={v => set('assessmentDoneThisYear', v)} />
           </div>
 
           <div className="subsection">
