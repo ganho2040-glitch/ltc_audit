@@ -27,6 +27,8 @@ export const COLUMNS = [
   { header: '자격증 있음', key: 'hasLicense', type: 'bool' },
   { header: '지자체신고 완료', key: 'isRegistered', type: 'bool' },
   { header: '계획서 서명 있음', key: 'planSigned', type: 'bool' },
+  // 예외는 "있다고 체크해야" 적용 → 옛 CSV에 없으면 '예외 없음(false)'이 안전한 기본값
+  { header: '계획서 서명 예외', key: 'planSignExempted', type: 'bool', missingDefault: false },
   { header: '서명생략 사유기재', key: 'signatureReasonWritten', type: 'bool' },
   { header: '인지활동형 여부', key: 'isCognitive', type: 'bool' },
   { header: '인지 특이사항 기록', key: 'cognitiveNoteWritten', type: 'bool' },
@@ -89,7 +91,7 @@ export const EXAMPLE_ROW = {
   lastAssessmentDate: '2025-03-10',
   assessmentDoneThisYear: true,
   insuranceGap: false, hasLicense: true, isRegistered: true,
-  planSigned: true, signatureReasonWritten: true,
+  planSigned: true, planSignExempted: false, signatureReasonWritten: true,
   isCognitive: false, cognitiveNoteWritten: true,
   hasDeteriorated: false, actionAfterDeterioration: true,
   socialWorkerVisited: true, riskAssessmentDone: true, outcomeEvalDone: true,

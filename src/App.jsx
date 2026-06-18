@@ -75,6 +75,7 @@ function emptyRecipient() {
     lastAssessmentDate: '',
     assessmentDoneThisYear: true,
     planSigned: true,
+    planSignExempted: false,
     missingSignatures: 0, signatureReasonWritten: true,
     isCognitive: false, cognitiveNoteWritten: true,
     hasDeteriorated: false, actionAfterDeterioration: true,
@@ -259,6 +260,9 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
           <div className="subsection">
             <h4>급여제공계획서 서명</h4>
             <CheckInput label="급여제공계획서 서명 있음" checked={data.planSigned} onChange={v => set('planSigned', v)} />
+            {!data.planSigned && (
+              <CheckInput label="서명 예외: 우편발송+유선안내 근거 있음 또는 전자서명" checked={data.planSignExempted} onChange={v => set('planSignExempted', v)} />
+            )}
           </div>
 
           <div className="subsection">
