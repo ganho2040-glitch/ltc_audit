@@ -174,10 +174,7 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
       </div>
 
       {/* 이 수급자의 종합 상태 — 카드에서 가장 눈에 띄는 표시 */}
-      <div
-        className="status-banner"
-        style={{ background: getGradeColor(result.grade) }}
-      >
+      <div className={`status-banner status-${result.grade}`}>
         <span className="status-label">{gradeText(result.grade)}</span>
         <span className="status-score">· {result.score}점</span>
       </div>
