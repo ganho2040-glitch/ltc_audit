@@ -125,6 +125,11 @@ function DateInput({ label, value, onChange }) {
 function RecipientCard({ data, index, onUpdate, onRemove }) {
   const result = judgeRecipient(data)
 
+  // 표시용 합계(판정 로직과 무관 — 화면 안내만)
+  const detailSum = (data.physicalMin || 0) + (data.cognitiveMin || 0) +
+    (data.cognitiveManageMin || 0) + (data.emotionalMin || 0) + (data.houseworkMin || 0)
+  const totalMatch = data.totalMin === detailSum
+
   function set(key, val) {
     onUpdate(index, { ...data, [key]: val })
   }
@@ -156,19 +161,20 @@ function RecipientCard({ data, index, onUpdate, onRemove }) {
 
           <div className="subsection">
             <h4>기록지 총시간과 세부 활동시간 일치 <span className="rule-code">(분 단위)</span></h4>
-            <div className="field-grid">
+            <div className="r01-total">
               <NumInput label="기록지 총시간" value={data.totalMin} onChange={v => set('totalMin', v)} suffix="분" />
+            </div>
+            <div className="r01-divider" />
+            <div className="r01-details field-grid">
               <NumInput label="신체활동" value={data.physicalMin} onChange={v => set('physicalMin', v)} suffix="분" />
               <NumInput label="인지활동" value={data.cognitiveMin} onChange={v => set('cognitiveMin', v)} suffix="분" />
               <NumInput label="인지관리" value={data.cognitiveManageMin} onChange={v => set('cognitiveManageMin', v)} suffix="분" />
               <NumInput label="정서지원" value={data.emotionalMin} onChange={v => set('emotionalMin', v)} suffix="분" />
               <NumInput label="가사지원" value={data.houseworkMin} onChange={v => set('houseworkMin', v)} suffix="분" />
             </div>
-            <p className="calc-hint">
-              항목 합계: {(data.physicalMin || 0) + (data.cognitiveMin || 0) + (data.cognitiveManageMin || 0) + (data.emotionalMin || 0) + (data.houseworkMin || 0)}분
-              {data.totalMin !== (data.physicalMin || 0) + (data.cognitiveMin || 0) + (data.cognitiveManageMin || 0) + (data.emotionalMin || 0) + (data.houseworkMin || 0)
-                ? ' ⚠️ 총시간과 불일치!'
-                : ' ✓ 일치'}
+            <p className={`calc-hint ${totalMatch ? 'match' : 'mismatch'}`}>
+              항목 합계: {detailSum}분
+              {totalMatch ? ' ✓ 일치' : ' ⚠️ 총시간과 불일치!'}
             </p>
           </div>
 

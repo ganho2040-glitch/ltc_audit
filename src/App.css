@@ -276,11 +276,13 @@ h1 {
   border-left: 3px solid #e5e7eb;
 }
 .subsection h4 {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
-  color: #555;
-  margin: 0 0 8px 0;
+  color: #1f2a37;
+  margin: 20px 0 8px 0;
 }
+/* 섹션 첫 항목은 제목과 너무 붙지 않게 상단 여백 축소 */
+.subsection:first-of-type h4 { margin-top: 4px; }
 
 /* ── 입력 필드 ── */
 .field-grid {
@@ -296,8 +298,31 @@ h1 {
 }
 .field-label {
   white-space: nowrap;
-  color: #444;
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
   min-width: 80px;
+}
+/* 체크박스 라벨: 입력 라벨보다 약간 진하게(읽기 우선) */
+.check-field .field-label {
+  color: #374151;
+  padding-left: 4px;
+  min-width: 0;
+}
+
+/* ── R01 총시간 vs 세부항목 위계 ── */
+.r01-total .field-label {
+  font-weight: 600;
+  color: #1f2a37;
+}
+.r01-divider {
+  height: 1px;
+  background: #eaeaea;
+  margin: 10px 0;
+}
+.r01-details {
+  padding-left: 12px;
+  border-left: 2px solid #eaeaea;
 }
 .field input[type="number"],
 .field input[type="time"],
@@ -330,8 +355,19 @@ h1 {
 }
 .calc-hint {
   font-size: 13px;
-  color: #666;
-  margin: 6px 0 0 0;
+  font-weight: 500;
+  margin: 10px 0 0 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+.calc-hint.match {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+.calc-hint.mismatch {
+  background: #fdeaea;
+  color: #c0392b;
 }
 
 /* ── RFID vs 청구 시간 비교 표 ── */
@@ -471,7 +507,7 @@ h1 {
   margin-top: 3px;
 }
 .rule-code {
-  font-size: 11px;
+  font-size: 12px;
   color: #9ca3af;
   font-weight: 400;
 }
