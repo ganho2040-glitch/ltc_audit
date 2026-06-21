@@ -1049,8 +1049,11 @@
   function obNext(){ if(obStep<2){ obStep++; showOb(); } else finishOb(); }
   function finishOb(){ document.getElementById('onboarding').hidden=true; try{localStorage.setItem('ltc.onboarded','1');}catch(_){} show('board'); }
   function maybeOnboard(){
+    // 체험해보기(랜딩) 진입은 ?ob=1 또는 #onboarding 신호로 항상 온보딩부터 시작.
+    let forced=false;
+    try{ forced = new URLSearchParams(location.search).has('ob') || location.hash==='#onboarding'; }catch(_){}
     let seen=null; try{ seen=localStorage.getItem('ltc.onboarded'); }catch(_){}
-    if(seen){ document.getElementById('onboarding').hidden=true; return; }
+    if(seen && !forced){ document.getElementById('onboarding').hidden=true; return; }
     renderTrust(); obStep=0; showOb(); document.getElementById('onboarding').hidden=false;
   }
 
