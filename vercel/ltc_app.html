@@ -208,9 +208,9 @@
   .reg-body .req{color:var(--danger)}
   .reg-input{width:100%;height:50px;background:var(--surface);border:1.5px solid var(--brand);border-radius:13px;padding:0 16px;font-size:15px;color:var(--text);font-weight:500;margin-bottom:8px}
   .reg-hint{font-size:12px;color:var(--muted);margin-bottom:20px}
-  .reg-date{width:100%;height:50px;background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:0 16px;font-size:15px;color:var(--text);display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;cursor:pointer}
-  .reg-date .num{font-family:var(--mono)}
-  .reg-date input[type=date]{position:absolute;opacity:0;width:0;height:0}
+  .reg-date{width:100%;height:50px;background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:0 16px;font-size:15px;font-family:var(--mono);color:var(--text);margin-bottom:6px;appearance:none;cursor:pointer}
+  .reg-date:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .reg-date::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.55;width:20px;height:20px}
   .seg{display:flex;gap:8px;margin-bottom:24px}
   .seg .opt{flex:1;height:46px;border:1px solid var(--border);border-radius:11px;background:var(--surface);font-size:13px;font-weight:600;color:var(--sub);cursor:pointer}
   .seg .opt.on{border-color:var(--brand);background:var(--brand);color:#fff}
@@ -231,6 +231,9 @@
   .recent .rn{font-size:12px;color:var(--sub);margin-top:8px;line-height:1.5} .recent .rn b{color:var(--brand)}
   .qblock{margin-bottom:16px}
   .qblock .ql{font-size:13px;font-weight:700;margin-bottom:8px}
+  .guide-sel{width:100%;height:48px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0 14px;font-size:15px;font-weight:600;color:var(--text);font-family:var(--sans);appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23667085' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+  .guide-sel:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .guide-sel:disabled{color:var(--muted);background-color:var(--soft)}
   .opts{display:flex;flex-wrap:wrap;gap:8px}
   .opt-chip{background:var(--soft);color:var(--sub);border:1px solid var(--border);border-radius:999px;padding:8px 16px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap}
   .opt-chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
@@ -412,6 +415,7 @@
             <button class="add-dark" id="list-add"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg>추가</button>
           </div>
           <div class="mono" id="list-sub" style="font-size:11px;color:var(--muted);padding:0 20px;margin-bottom:13px"></div>
+          <div class="chips" id="recip-sort" style="padding:0 20px 12px"></div>
           <div class="rcards" id="rcards"></div>
           <div style="height:24px"></div>
         </div>
@@ -472,7 +476,8 @@
           <input class="reg-input" id="f-alias" type="text" placeholder="예: 나할머니, 201호, 김O순">
           <div class="reg-hint">예: "나할머니", "201호", "김O순" — 본인 방식대로</div>
           <label class="lab" for="f-start">급여 개시일</label>
-          <label class="reg-date"><span class="num" id="f-start-disp">날짜 선택</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg><input id="f-start" type="date"></label>
+          <input class="reg-date" id="f-start" type="date">
+          <div class="reg-hint" style="margin-top:-14px;margin-bottom:20px">탭하면 달력에서 날짜를 고를 수 있어요.</div>
           <label class="lab">장기요양 등급</label>
           <div class="seg" id="grade-seg">
             <button type="button" class="opt" data-grade="1등급">1등급</button>
@@ -495,6 +500,7 @@
           <div><div style="font-size:17px;font-weight:800;letter-spacing:-.02em;line-height:1.2">상태변화 기록</div><div class="mono" id="guide-sub" style="font-size:11px;color:var(--muted)">작성 가이드</div></div>
         </div>
         <div class="guide-body" style="flex:1">
+          <div class="qblock" style="margin-top:2px"><div class="ql">누구의 기록인가요?</div><select class="guide-sel" id="guide-who"></select></div>
           <div class="recent">
             <div class="rl">최근 기록 · 참고</div>
             <div class="rq">"06/10 식사량 감소, 보호자 유선 안내"</div>
@@ -821,21 +827,43 @@
     const n=computeOpenChains().filter(c=>c.recipientId===r.id).length;
     return n>0 ? {s:`이어서 할 일 ${n}`, t:'gap'} : {s:'정상', t:'soft'};
   }
+  let recipSort='위급순';
+  function lastTouched(r){ let t=r.createdAt||0; (r.events||[]).forEach(e=>{const ms=Date.parse(e.date); if(!isNaN(ms)&&ms>t)t=ms;}); return t; }
+  function urgencyRank(r){
+    const mine=computeOpenChains().filter(c=>c.recipientId===r.id);
+    if(mine.length===0) return [3,Infinity];
+    const sev=maxSeverity(mine), rank=sev==='crit'?0:sev==='warn'?1:2;
+    const dday=Math.min(...mine.map(c=>c.dday==null?Infinity:c.dday));
+    return [rank,dday];
+  }
+  function sortRecipients(list){
+    const a=[...list];
+    if(recipSort==='가나다순') a.sort((x,y)=>String(x.alias).localeCompare(String(y.alias),'ko'));
+    else if(recipSort==='최근 수정순') a.sort((x,y)=>lastTouched(y)-lastTouched(x));
+    else a.sort((x,y)=>{const u=urgencyRank(x),v=urgencyRank(y);return u[0]-v[0]||u[1]-v[1];});
+    return a;
+  }
+  function renderRecipSort(){
+    const wrap=document.getElementById('recip-sort');
+    wrap.innerHTML=['위급순','가나다순','최근 수정순'].map(v=>`<button class="chip ${recipSort===v?'on':''}" data-s="${v}">${v}</button>`).join('');
+    wrap.querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{recipSort=b.dataset.s;renderList();}));
+  }
   function renderList(){
     const wrap=document.getElementById('list-wrap'), empty=document.getElementById('list-empty'), cards=document.getElementById('rcards');
-    if(recipients.length===0){ wrap.style.display='none'; empty.style.display='flex'; return; }
+    if(recipients.length===0){ wrap.style.display='none'; empty.style.display='flex'; document.getElementById('recip-sort').innerHTML=''; return; }
     wrap.style.display='flex'; empty.style.display='none';
     document.getElementById('list-sub').textContent=`등록 ${recipients.length}명 · 별칭만 저장됨`;
-    cards.innerHTML=recipients.map((r,i)=>{
+    renderRecipSort();
+    cards.innerHTML=sortRecipients(recipients).map(r=>{
       const st=statusOf(r), tn=avatarTone(r.alias), init=(r.alias||'?').slice(0,1);
-      return `<button class="rcard" data-i="${i}">
+      return `<button class="rcard" data-id="${r.id}">
         <span class="avatar" style="background:${tn.bg};color:${tn.fg}">${escapeHtml(init)}</span>
         <div class="rc-main"><div class="rc-name">${escapeHtml(r.alias)}</div><div class="rc-meta">${escapeHtml(r.grade)} · 개시 ${fmtStart(r.startDate)}</div></div>
         <span class="rc-status ${st.t}">${st.s}</span>
         <span class="cchev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
       </button>`;
     }).join('');
-    cards.querySelectorAll('.rcard').forEach(b=>b.addEventListener('click',()=>openDetail(recipients[+b.dataset.i])));
+    cards.querySelectorAll('.rcard').forEach(b=>b.addEventListener('click',()=>{const r=recipients.find(x=>x.id===b.dataset.id); if(r) openDetail(r);}));
   }
 
   /* ── 9 노드 ── (동결) */
@@ -992,7 +1020,16 @@
     mk(document.getElementById('opt-how'),Object.keys(G_HOW),gHow,v=>gHow=v);
     mk(document.getElementById('opt-act'),Object.keys(G_ACT),gAct,v=>gAct=v);
   }
+  function renderGuideWho(){
+    const sel=document.getElementById('guide-who');
+    if(recipients.length===0){ sel.innerHTML='<option>등록된 수급자가 없어요</option>'; sel.disabled=true; currentRecipient=null; return; }
+    sel.disabled=false;
+    if(!currentRecipient || !recipients.some(r=>r.id===currentRecipient.id)) currentRecipient=recipients[0];
+    sel.innerHTML=recipients.map(r=>`<option value="${r.id}" ${r.id===currentRecipient.id?'selected':''}>${escapeHtml(r.alias)} · ${escapeHtml(r.grade)}</option>`).join('');
+    sel.onchange=()=>{ const r=recipients.find(x=>x.id===sel.value); if(r){ currentRecipient=r; gCopied=false; renderGuide(); } };
+  }
   function renderGuide(){
+    renderGuideWho();
     renderGuideChips();
     document.getElementById('gen-sentence').textContent=guideSentence();
     const btn=document.getElementById('copy-btn');
@@ -1037,7 +1074,6 @@
   function resetRegister(){
     document.getElementById('f-alias').value='';
     document.getElementById('f-start').value='';
-    document.getElementById('f-start-disp').textContent='날짜 선택';
     regGrade=''; regNew=false;
     document.querySelectorAll('#grade-seg .opt').forEach(o=>o.classList.remove('on'));
     document.getElementById('f-new').classList.remove('on');
@@ -1046,7 +1082,6 @@
     regGrade=o.dataset.grade; document.querySelectorAll('#grade-seg .opt').forEach(x=>x.classList.remove('on')); o.classList.add('on');
   }));
   document.getElementById('f-new').addEventListener('click',()=>{ regNew=!regNew; document.getElementById('f-new').classList.toggle('on',regNew); });
-  document.getElementById('f-start').addEventListener('change',(e)=>{ document.getElementById('f-start-disp').textContent=e.target.value?e.target.value.replace(/-/g,'.'):'날짜 선택'; });
   document.getElementById('reg-save').addEventListener('click',()=>{
     const alias=(document.getElementById('f-alias').value||'').trim()||'새 수급자';
     const startDate=document.getElementById('f-start').value||'';
