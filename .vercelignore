@@ -1,0 +1,4 @@
+# 내부 문서·엔진 자산 — 공개 배포에서 제외 (GitHub 비공개 repo엔 보존, 사이트엔 미노출)
+*.md
+CLAUDE.md
+reference/
