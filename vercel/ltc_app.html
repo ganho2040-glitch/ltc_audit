@@ -32,6 +32,9 @@
   #view-board .date{font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--muted)}
   #view-board h1{font-size:27px;font-weight:800;letter-spacing:-.03em;margin-top:6px}
   .lede{margin-top:8px;font-size:13.5px;color:var(--muted)}
+  .demo-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:7px 8px 7px 13px;margin-bottom:14px;font-size:13px;color:var(--sub)}
+  .demo-banner button{flex-shrink:0;min-height:40px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--brand);font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;padding:0 13px}
+  .demo-banner button:active{background:var(--brand-soft)}
   .head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
   .bell{position:relative;flex-shrink:0;width:42px;height:42px;border-radius:50%;background:var(--surface);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--brand);box-shadow:var(--card-shadow)}
   .bell-badge{position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--danger);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
@@ -45,7 +48,7 @@
   .overview{display:flex;margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
   .ov{flex:1;padding:13px 16px;display:flex;flex-direction:column;gap:3px}
   .ov+.ov{border-left:1px solid var(--divider)}
-  .ov-n{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--brand);font-variant-numeric:tabular-nums}
+  .ov-n{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--muted);font-variant-numeric:tabular-nums}
   .ov-l{font-size:13px;font-weight:600;color:var(--sub)}
   .board-list{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
   .brow{width:100%;display:flex;align-items:stretch;background:none;border:none;text-align:left;font-family:var(--sans);cursor:pointer;padding:0}
@@ -57,7 +60,7 @@
   .brow-who{font-size:15.5px;font-weight:700;letter-spacing:-.01em}
   .brow-flow{display:flex;align-items:center;flex-wrap:wrap;gap:3px;margin-top:7px}
   .flow-node{display:inline-flex;align-items:center;gap:3px;font-size:12.5px;font-weight:600;border-radius:6px;padding:2px 7px;white-space:nowrap}
-  .flow-node.done{background:#ECF6F3;color:var(--brand)}
+  .flow-node.done{background:var(--soft);color:var(--sub)}
   .flow-node.next{border:1px dashed currentColor;background:transparent}
   .flow-arrow{color:var(--muted);font-size:12px}
   .brow-out{margin-top:7px;font-size:15px;font-weight:500;color:var(--sub);line-height:1.45}
@@ -163,8 +166,10 @@
   #view-detail .ev-form .btn.cancel{background:var(--surface);border:1px solid var(--border);color:var(--sub)}
   #view-detail .ev-form .btn.save{flex:1.4;background:var(--brand);border:none;color:#fff}
   #view-detail .dday{flex-shrink:0;font-size:12px;font-weight:700;background:var(--warning-bg);color:var(--warn-fg);border-radius:999px;padding:4px 10px}
-  #view-detail .gap-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--danger);border-radius:12px;padding:15px 16px 16px;box-shadow:var(--card-shadow)}
-  #view-detail .gap-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--danger);background:var(--danger-bg);border-radius:999px;padding:3px 9px}
+  #view-detail .gap-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--strong);border-radius:12px;padding:15px 16px 16px;box-shadow:var(--card-shadow)}
+  #view-detail .gap-label{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--sub);background:var(--soft);border-radius:999px;padding:3px 9px}
+  #view-detail .gap-label.crit{color:var(--danger);background:var(--danger-bg)}
+  #view-detail .gap-label.warn{color:var(--warn-fg);background:var(--warning-bg)}
   #view-detail .gap-title{margin-top:10px;font-size:17px;font-weight:800;letter-spacing:-.025em;line-height:1.3}
   #view-detail .gap-why{margin-top:7px;font-size:13px;color:var(--sub);line-height:1.5} #view-detail .gap-why b{color:var(--text);font-weight:700}
   #view-detail .gap-src{margin-top:10px;padding-top:9px;border-top:1px solid var(--divider);font-size:13px;color:var(--sub);line-height:1.5;letter-spacing:-.01em}
@@ -222,6 +227,7 @@
 
       <!-- BOARD -->
       <section id="view-board" class="view active">
+        <div class="demo-banner" id="demo-banner" hidden><span>샘플 데이터로 미리 보는 중</span><button type="button" id="demo-reset">비우고 내 걸로 시작</button></div>
         <header>
           <div class="head-row">
             <div><div class="date" id="board-date"></div><h1>오늘의 보드</h1></div>
@@ -368,6 +374,30 @@
   }
 
   let recipients=loadRecipients();
+
+  // 체험 데모 시드 — 첫 방문(빈 상태·플래그 없음)에만 샘플 6명. 엔진이 각자 다른 빈틈을 자동으로 잡음(judge/정렬 0 변경).
+  function seedDemoIfEmpty(){
+    if(recipients.length>0) return;
+    let flag=null; try{ flag=localStorage.getItem('ltc.seed'); }catch(_){}
+    if(flag) return; // 이미 시드했거나 사용자가 '비우고 시작'했으면 재시드 안 함
+    const offISO=(d)=>{const p=ymd(todayISO()); const dt=new Date(Date.UTC(p.Y,p.M-1,p.D)); dt.setUTCDate(dt.getUTCDate()+d); const z=n=>String(n).padStart(2,'0'); return `${dt.getUTCFullYear()}-${z(dt.getUTCMonth()+1)}-${z(dt.getUTCDate())}`;};
+    const ev=(type,d,note='')=>({id:newId(), type, date:offISO(d), done:true, note});
+    const r=(alias,grade,start,events)=>({id:newId(), alias, startDate:start, grade, isNew:false, createdAt:Date.now(), events});
+    recipients.push(
+      r('김복순','3등급','2024-09-01',[ev('needs',-30)]),                                                                  // C3 욕구사정→계획(평상)
+      r('박정자','2등급','2024-06-01',[ev('result',-40)]),                                                                 // C2 결과평가→재작성 지남(위험)
+      r('이순옥','4등급','2025-01-01',[ev('risk',-15)]),                                                                   // C4 위험도→계획(평상)
+      r('정만수','3등급','2024-11-01',[ev('plan',-10)]),                                                                   // C5 계획→설명·서명·통보(평상)
+      r('최영자','5등급','2024-08-01',[ev('needs',-50),ev('plan',-45),ev('planNotify',-44),ev('result',-20),ev('rewrite',-15)]), // 빈틈 없음(정상·목록)
+      r('한금자','2등급','2024-07-01',[ev('result',-26)])                                                                  // C2 결과평가→재작성 임박(주의)
+    );
+    saveRecipients();
+    try{ localStorage.setItem('ltc.seed','demo'); }catch(_){}
+  }
+  function updateDemoBanner(){
+    let f=null; try{ f=localStorage.getItem('ltc.seed'); }catch(_){}
+    document.getElementById('demo-banner').hidden = (f!=='demo');
+  }
   const navOf={board:'board', recipients:'recipients', detail:'recipients', register:'recipients', settings:'settings'};
 
   function statusOf(r){
@@ -430,14 +460,18 @@
     if(dday!=null && dday<=7) return 'warn';
     return 'calm';
   }
-  function sevColor(sev){ return sev==='crit'?'var(--danger)':sev==='warn'?'var(--warning)':'var(--brand)'; }
+  // 색 위계: 평상(딥틸 X)=중립으로 가라앉히고, 상태색(amber/red)은 임박·지남에만.
+  function sevBar(sev){ return sev==='crit'?'var(--danger)':sev==='warn'?'var(--warning)':'var(--strong)'; }   // 좌측바: 평상=연회색
+  function sevText(sev){ return sev==='crit'?'var(--danger)':sev==='warn'?'var(--warning)':'var(--sub)'; }     // next노드 텍스트: 평상=중립
+  function sevAccent(sev){ return sev==='crit'?'var(--danger)':sev==='warn'?'var(--warning)':'var(--text)'; }  // 스탯·벨 강조: 평상만=진한중립(#0F172A)
+  function maxSeverity(list){ let s='calm'; for(const c of list){ const x=chainSeverity(c.dday); if(x==='crit')return 'crit'; if(x==='warn')s='warn'; } return s; }
   // 연쇄 1행 마크업(보드·시트 공용). data-id+data-code로 상세의 해당 카드까지 추적.
   function chainRowHTML(c){
-    const sev=chainSeverity(c.dday), col=sevColor(sev);
+    const sev=chainSeverity(c.dday), barCol=sevBar(sev), txtCol=sevText(sev);
     const parts=CHAIN_SHORT[c.code].split(' → ');
     const chip=c.dday!=null?`<span class="dchip ${sev}">${ddayText(c.dday)}</span>`:'';
     const out=(c.duty.split('이어서 — ')[1]||c.duty).trim();
-    return `<button class="brow" data-id="${c.recipientId}" data-code="${c.code}"><span class="brow-bar" style="background:${col}"></span><div class="brow-main"><div class="brow-top"><span class="brow-who">${escapeHtml(c.alias)}</span>${chip}</div><div class="brow-flow"><span class="flow-node done">✓ ${escapeHtml(parts[0])}</span><span class="flow-arrow">→</span><span class="flow-node next" style="color:${col}">${escapeHtml(parts[1]||'')}</span></div><div class="brow-out">${escapeHtml(out)}</div></div><span class="brow-chev">›</span></button>`;
+    return `<button class="brow" data-id="${c.recipientId}" data-code="${c.code}"><span class="brow-bar" style="background:${barCol}"></span><div class="brow-main"><div class="brow-top"><span class="brow-who">${escapeHtml(c.alias)}</span>${chip}</div><div class="brow-flow"><span class="flow-node done">✓ ${escapeHtml(parts[0])}</span><span class="flow-arrow">→</span><span class="flow-node next" style="color:${txtCol}">${escapeHtml(parts[1]||'')}</span></div><div class="brow-out">${escapeHtml(out)}</div></div><span class="brow-chev">›</span></button>`;
   }
   function renderBoard(){
     const chains=computeOpenChains().sort(sortChains);
@@ -448,10 +482,14 @@
       wrap.innerHTML=`<div class="board-list">${chains.slice(0,3).map(chainRowHTML).join('')}</div>`;
       wrap.querySelectorAll('.brow[data-id]').forEach(b=>b.addEventListener('click',()=>{const r=recipients.find(x=>x.id===b.dataset.id); if(r)openDetail(r);}));
     }
-    document.getElementById('stat-chain').textContent=chains.length;
-    document.getElementById('stat-week').textContent=chains.filter(c=>c.dday!=null && c.dday<=7).length;
+    // 스탯·벨 색 = 최고 심각도(crit→red·warn→amber·평상만→진한중립). 0이면 muted. "할 일 있음"은 항상 보이되 임박만 경보색.
+    const weekItems=chains.filter(c=>c.dday!=null && c.dday<=7);
+    const scEl=document.getElementById('stat-chain'); scEl.textContent=chains.length;
+    scEl.style.color = chains.length===0 ? 'var(--muted)' : sevAccent(maxSeverity(chains));
+    const swEl=document.getElementById('stat-week'); swEl.textContent=weekItems.length;
+    swEl.style.color = weekItems.length===0 ? 'var(--muted)' : sevAccent(maxSeverity(weekItems));
     const bb=document.getElementById('bell-badge');
-    if(chains.length>0){bb.style.display='flex';bb.textContent=chains.length;} else {bb.style.display='none';}
+    if(chains.length>0){bb.style.display='flex';bb.textContent=chains.length;bb.style.background=sevAccent(maxSeverity(chains));} else {bb.style.display='none';}
   }
   // ── 알림함 바텀 시트 ── 계산 리스트 그대로(엔진 0 변경). 표현/내비게이터 역할만.
   let sheetOpen=false;
@@ -494,8 +532,9 @@
     document.getElementById('d-chain-n').textContent=mine.length;
     document.getElementById('d-due-n').textContent=mine.filter(c=>c.dday!=null && c.dday<=7).length;
     box.innerHTML=mine.map(c=>{
+      const sev=chainSeverity(c.dday);
       const label=c.dday!=null?ddayText(c.dday):'이어서 할 일';
-      return `<div class="gap-card" data-code="${c.code}" style="margin-bottom:12px"><span class="gap-label">${label}</span><div class="gap-title">${CHAIN_SHORT[c.code]}</div><div class="gap-why">${escapeHtml(c.duty)}</div><div class="gap-src">근거 · ${escapeHtml(CHAIN_SOURCE[c.code])}</div><button class="cta" data-resolve="${c.code}">작성 완료로 표시</button></div>`;
+      return `<div class="gap-card ${sev}" data-code="${c.code}" style="margin-bottom:12px;border-left-color:${sevBar(sev)}"><span class="gap-label ${sev}">${label}</span><div class="gap-title">${CHAIN_SHORT[c.code]}</div><div class="gap-why">${escapeHtml(c.duty)}</div><div class="gap-src">근거 · ${escapeHtml(CHAIN_SOURCE[c.code])}</div><button class="cta" data-resolve="${c.code}">작성 완료로 표시</button></div>`;
     }).join('');
     box.querySelectorAll('.cta[data-resolve]').forEach(b=>b.addEventListener('click',()=>resolveChain(b.dataset.resolve)));
   }
@@ -654,6 +693,12 @@
     const d=new Date(); const W=['SUN','MON','TUE','WED','THU','FRI','SAT'];
     document.getElementById('board-date').textContent=`${d.getMonth()+1}.${d.getDate()} ${W[d.getDay()]}`;
   })();
+  document.getElementById('demo-reset').addEventListener('click',()=>{
+    recipients.length=0; saveRecipients();
+    try{ localStorage.setItem('ltc.seed','dismissed'); }catch(_){}
+    location.reload();
+  });
+  seedDemoIfEmpty(); updateDemoBanner();
   renderBoard(); renderList();
 </script>
 </body>
